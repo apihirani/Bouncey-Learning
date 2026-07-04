@@ -1,5 +1,5 @@
 /* =========================================================
-   GigglyLearn — script.js
+   Bouncy Learning — script.js
    Loader, navbar, mobile menu, theme toggle, GSAP scroll reveals,
    adventure-path draw, counters, countdown, tilt, ripple, confetti.
    ========================================================= */

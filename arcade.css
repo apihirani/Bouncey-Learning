@@ -1,5 +1,5 @@
 /* =========================================================
-   GigglyLearn — Arcade (Local Multiplayer Game System)
+   Bouncy Learning — Arcade (Local Multiplayer Game System)
    Reuses design tokens from style.css (:root variables)
    ========================================================= */
 
@@ -49,10 +49,10 @@
   display:flex; flex-direction:column; align-items:center; gap:10px; border:2px solid transparent;
 }
 .player-setup-card .avatar-emoji{ font-size:44px; line-height:1; }
-.avatar-picker{ display:flex; gap:6px; }
+.avatar-picker{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; max-width:170px; }
 .avatar-opt{
-  width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  background:rgba(255,255,255,.1); font-size:16px; border:2px solid transparent;
+  width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.1); font-size:14px; border:2px solid transparent;
 }
 .avatar-opt.is-selected{ border-color:#fff; background:rgba(255,255,255,.25); }
 .player-name-input{
@@ -170,6 +170,8 @@
   display:flex; align-items:center; gap:14px; background:rgba(255,255,255,.08); padding:14px 18px; border-radius:16px;
 }
 .result-row.is-winner{ background:rgba(250,204,21,.2); border:2px solid var(--yellow); }
+.result-row-wrap{ display:flex; flex-direction:column; gap:4px; }
+.result-stats{ font-family:var(--font-data); font-size:11.5px; color:rgba(255,255,255,.65) !important; padding-left:8px; }
 .result-rank{ font-family:var(--font-data); font-weight:700; font-size:15px; width:26px; }
 .result-avatar{ font-size:26px; }
 .result-name{ flex:1; text-align:left; font-weight:700; }
@@ -184,3 +186,172 @@
 .game-card{ text-align:left; width:100%; background:var(--surface); font-family:inherit; }
 .game-card .game-body h3{ color:var(--text); }
 .arcade-overlay button, .arcade-overlay input{ font-family:var(--font-body); }
+
+/* =========================================================
+   PHASE 1 — Arcade Foundation Upgrade (additive)
+   ========================================================= */
+
+/* ---------- floating decorations ---------- */
+.arcade-deco{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.deco{ position:absolute; opacity:.5; font-size:28px; }
+.deco--cloud1{ top:8%; left:8%; font-size:40px; animation:decoDriftX 16s ease-in-out infinite; }
+.deco--cloud2{ top:14%; right:12%; font-size:32px; animation:decoDriftX 20s ease-in-out infinite reverse; }
+.deco--balloon1{ bottom:10%; left:6%; animation:decoFloatY 7s ease-in-out infinite; }
+.deco--balloon2{ bottom:16%; right:8%; animation:decoFloatY 8s ease-in-out infinite 1s; }
+.deco--sparkle1{ top:30%; left:20%; font-size:20px; animation:decoTwinkle 3s ease-in-out infinite; }
+.deco--sparkle2{ top:50%; right:22%; font-size:18px; animation:decoTwinkle 3.6s ease-in-out infinite .8s; }
+.deco--puzzle{ bottom:30%; left:14%; font-size:24px; animation:decoFloatY 9s ease-in-out infinite .5s; }
+.deco--abc{ top:20%; right:6%; font-family:var(--font-display); font-weight:700; font-size:30px; color:var(--yellow); animation:decoFloatY 10s ease-in-out infinite; }
+.deco--star{ bottom:20%; right:30%; font-size:22px; animation:decoTwinkle 4s ease-in-out infinite 1.2s; }
+@keyframes decoDriftX{ 0%,100%{ transform:translateX(0);} 50%{ transform:translateX(30px);} }
+@keyframes decoFloatY{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-20px);} }
+@keyframes decoTwinkle{ 0%,100%{ opacity:.2; transform:scale(.8);} 50%{ opacity:.8; transform:scale(1.1);} }
+.arcade-screen, .arcade-close, .arcade-mute-btn{ position:relative; z-index:1; }
+
+/* ---------- mute button ---------- */
+.arcade-mute-btn{ position:fixed; top:20px; right:76px; background:rgba(255,255,255,.12); font-size:17px; z-index:10; }
+.arcade-mute-btn:hover{ background:rgba(255,255,255,.22); }
+
+/* ---------- header strip ---------- */
+.arcade-header-strip{ display:flex; align-items:center; gap:16px; margin-bottom:6px; }
+.arcade-mascot{ font-size:52px; filter:drop-shadow(0 8px 14px rgba(0,0,0,.35)); }
+.arcade-header-text{ text-align:left; }
+.arcade-header-text .arcade-heading{ margin:2px 0 0; }
+
+/* ---------- premium player-count cards ---------- */
+.player-count-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; width:100%; max-width:640px; margin:0 auto 32px; }
+@media (max-width:640px){ .player-count-row{ grid-template-columns:1fr 1fr; } }
+.count-card{
+  display:flex; flex-direction:column; align-items:center; gap:6px; padding:20px 12px; border-radius:18px;
+  background:rgba(255,255,255,.08); border:2px solid transparent; transition:transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.count-card:hover{ transform:translateY(-4px); background:rgba(255,255,255,.14); }
+.count-illustration{ font-size:30px; }
+.count-card strong{ font-family:var(--font-display); font-size:14.5px; }
+.count-card small{ font-size:10.5px; color:rgba(255,255,255,.65) !important; }
+.count-card.is-selected{ border-color:var(--yellow); background:rgba(250,204,21,.18); box-shadow:0 10px 22px -8px rgba(250,204,21,.5); }
+
+/* ---------- premium player setup cards ---------- */
+.player-setup-card{ width:210px; position:relative; border:2px solid transparent; transition:border-color .3s ease, box-shadow .3s ease; }
+.player-setup-card.is-ready{ border-color:var(--green); box-shadow:0 0 0 4px rgba(16,185,129,.18); }
+.avatar-picker{ display:grid; grid-template-columns:repeat(6,1fr); gap:5px; width:100%; }
+.avatar-opt{ width:100%; aspect-ratio:1; height:auto; }
+.random-name-btn{
+  font-family:var(--font-data); font-size:11px; font-weight:700; padding:6px 12px; border-radius:999px;
+  background:rgba(255,255,255,.12); transition:background .2s ease;
+}
+.random-name-btn:hover{ background:rgba(255,255,255,.22); }
+.ready-btn{
+  font-family:var(--font-data); font-weight:700; font-size:12.5px; padding:9px 14px; border-radius:999px; width:100%;
+  background:rgba(255,255,255,.12); transition:background .2s ease, transform .2s ease;
+}
+.ready-btn.is-ready{ background:var(--green); color:#fff; }
+.setup-bottom-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+.arcade-next-btn:disabled{ opacity:.5; cursor:not-allowed; box-shadow:none; transform:none; }
+
+/* ---------- search + category filters ---------- */
+.game-search-input{
+  width:100%; max-width:420px; padding:12px 18px; border-radius:999px; border:none; margin-bottom:16px;
+  font-size:14px; color:var(--ink);
+}
+.category-row{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:26px; }
+.cat-chip{
+  font-family:var(--font-data); font-weight:700; font-size:12.5px; padding:8px 16px; border-radius:999px;
+  background:rgba(255,255,255,.08); transition:background .2s ease, transform .2s ease;
+}
+.cat-chip:hover{ transform:translateY(-2px); }
+.cat-chip.is-active{ background:var(--yellow); color:var(--ink); }
+.g-empty-msg{ grid-column:1/-1; color:rgba(255,255,255,.7) !important; padding:30px 0; }
+
+/* ---------- richer game cards ---------- */
+.arcade-game-card{ position:relative; text-align:left; display:flex; flex-direction:column; gap:6px; }
+.game-ribbon{
+  position:absolute; top:10px; right:10px; background:var(--pink); color:#fff; font-family:var(--font-data);
+  font-weight:700; font-size:9.5px; padding:3px 9px; border-radius:999px; letter-spacing:.04em;
+  animation:pulseBadge 1.8s ease-in-out infinite;
+}
+@keyframes pulseBadge{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.12);} }
+.fav-btn{
+  position:absolute; top:8px; left:8px; font-size:16px; width:26px; height:26px; border-radius:50%;
+  background:rgba(255,255,255,.12); color:#fff !important;
+}
+.fav-btn.is-fav{ color:var(--pink) !important; }
+.g-category-tag{
+  align-self:flex-start; font-family:var(--font-data); font-size:10px; font-weight:700; padding:3px 10px;
+  border-radius:999px; background:rgba(255,255,255,.14); color:rgba(255,255,255,.85) !important;
+}
+.g-meta-row{ display:flex; justify-content:space-between; font-size:11.5px; color:rgba(255,255,255,.7) !important; }
+.g-reward-row{ display:flex; justify-content:space-between; font-family:var(--font-data); font-weight:700; font-size:11.5px; color:var(--yellow) !important; margin-top:2px; }
+
+/* ---------- gameplay top row & pause ---------- */
+.play-top-row{ display:flex; justify-content:space-between; align-items:center; width:100%; max-width:760px; margin:0 auto 6px; }
+.pause-btn{ background:rgba(255,255,255,.12); font-size:16px; }
+.pause-btn:hover{ background:rgba(255,255,255,.22); }
+
+.pause-menu{
+  position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+  background:rgba(21,15,38,.75); opacity:0; transition:opacity .3s ease;
+}
+.pause-menu.is-open{ opacity:1; }
+.pause-menu-card{
+  background:var(--surface); border-radius:22px; padding:34px 30px; display:flex; flex-direction:column; gap:12px; width:min(300px,90%);
+}
+.pause-menu-card h3, .pause-menu-card .cta-btn--ghost{ color:var(--ink) !important; }
+.pause-menu-card .cta-btn--primary{ color:#fff !important; }
+.pause-menu-card h3{ font-family:var(--font-display); color:var(--ink); text-align:center; margin-bottom:8px; }
+.pause-menu-card .cta-btn{ width:100%; justify-content:center; }
+.pause-menu-card .cta-btn--ghost{ color:var(--violet); }
+
+/* ---------- countdown ---------- */
+.countdown-overlay{ display:flex; align-items:center; justify-content:center; width:100%; min-height:260px; }
+#countdownNum{ font-family:var(--font-display); font-size:96px; font-weight:800; color:var(--yellow); }
+#countdownNum.is-pop{ animation:countdownPop .55s cubic-bezier(.2,1.6,.4,1); }
+@keyframes countdownPop{ 0%{ transform:scale(.4); opacity:0;} 60%{ transform:scale(1.15); opacity:1;} 100%{ transform:scale(1); opacity:1;} }
+
+/* ---------- results rewards banner ---------- */
+.results-rewards{
+  display:flex; justify-content:center; gap:18px; flex-wrap:wrap; font-family:var(--font-data); font-weight:700; font-size:13px;
+  background:rgba(255,255,255,.08); padding:12px 18px; border-radius:14px; margin-bottom:16px; color:var(--yellow) !important;
+}
+
+/* ---------- micro interactions ---------- */
+.count-card:active, .opt-btn:active, .cta-btn:active, .arcade-game-card:active{ transform:scale(.96); }
+
+/* =========================================================
+   PHASE 2 — Premium Game Upgrade (additive)
+   ========================================================= */
+
+/* ---------- intro screen ---------- */
+.intro-card{ max-width:480px; margin:0 auto; text-align:center; }
+.intro-icon{ font-size:64px; margin-bottom:6px; }
+.intro-meta-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:22px 0 28px; font-family:var(--font-data); font-weight:700; font-size:13px;
+}
+.intro-meta-grid span{ background:rgba(255,255,255,.08); padding:10px; border-radius:12px; }
+.intro-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+/* ---------- tutorial modal ---------- */
+.tutorial-card{ text-align:left; max-width:340px; }
+.tutorial-card h3{ text-align:center; }
+.tutorial-steps{ padding-left:20px; margin:0 0 20px; display:flex; flex-direction:column; gap:10px; }
+.tutorial-steps li{ font-size:14px; color:var(--text-muted); }
+
+/* ---------- combo badge ---------- */
+.combo-badge{
+  display:inline-flex; align-items:center; gap:4px; background:linear-gradient(90deg,var(--yellow),var(--pink));
+  color:var(--ink) !important; font-family:var(--font-data); font-weight:700; font-size:12px; padding:4px 10px;
+  border-radius:999px; margin-left:8px; animation:pulseBadge 1s ease-in-out infinite;
+}
+
+/* ---------- hint button ---------- */
+.hint-btn{
+  font-family:var(--font-data); font-weight:700; font-size:12.5px; padding:8px 16px; border-radius:999px;
+  background:rgba(255,255,255,.12); transition:background .2s ease, transform .2s ease;
+}
+.hint-btn:hover:not(:disabled){ transform:translateY(-2px); background:rgba(255,255,255,.22); }
+.hint-btn:disabled{ opacity:.45; }
+.opt-btn.is-hinted{ opacity:.25; }
+
+/* ---------- educational explanation line ---------- */
+.stage-explain{ display:block; font-size:12.5px; color:rgba(255,255,255,.7) !important; margin-top:6px; font-weight:500; }
+

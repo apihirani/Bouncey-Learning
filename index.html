@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GigglyLearn — Where Learning Meets Fun</title>
-<meta name="description" content="GigglyLearn turns education into an adventure with games, brain challenges and interactive learning for kids age 5–14." />
+<title>Bouncy Learning — Where Learning Meets Fun</title>
+<meta name="description" content="Bouncy Learning turns education into an adventure with games, brain challenges and interactive learning for kids age 5–14." />
 
 <!-- Fonts: Baloo 2 (display/mascot voice), Inter (body/trust), Space Grotesk (data & badges) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 <!-- Tailwind (utility layer, tokens extended to match design system) -->
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwindcss.min.js"></script>
 
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -20,6 +20,7 @@
 
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="arcade.css" />
+<link rel="stylesheet" href="profile.css" />
 </head>
 <body class="antialiased">
 
@@ -39,7 +40,7 @@
     <path d="M155 90 L125 75 L130 100 Z" fill="#7C3AED"/>
     <path d="M60 175 Q100 195 140 175 Q100 165 60 175Z" fill="#EC4899"/>
   </svg>
-  <p class="loader-text">GigglyLearn</p>
+  <p class="loader-text">Bouncy Learning</p>
   <div class="loader-track"><div class="loader-bar"></div></div>
 </div>
 
@@ -63,7 +64,7 @@
         <circle cx="122" cy="105" r="9" fill="#1E1B2E"/>
         <path d="M92 128 L100 140 L108 128 Z" fill="#FACC15"/>
       </svg>
-      <span class="brand-name">Giggly<span class="brand-accent">Learn</span></span>
+      <span class="brand-name">Bouncy<span class="brand-accent">Learning</span></span>
     </a>
 
     <nav class="nav-links" aria-label="Primary">
@@ -83,6 +84,7 @@
       <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="icon-sun"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
+      <button class="icon-btn profile-btn" id="profileToggle" aria-label="Your profile"></button>
       <a href="https://yourblog.blogspot.com/" target="_blank" rel="noopener" class="cta-btn cta-btn--nav ripple">
         <span>Start Learning</span>
       </a>
@@ -93,7 +95,7 @@
   </div>
 
   <div id="searchBar" class="search-bar">
-    <input type="text" placeholder="Search games, subjects, blog posts…" aria-label="Search GigglyLearn" />
+    <input type="text" placeholder="Search games, subjects, blog posts…" aria-label="Search Bouncy Learning" />
   </div>
 </header>
 
@@ -192,7 +194,7 @@
     <div class="section-head reveal-up">
       <span class="eyebrow">🧭 Choose your path</span>
       <h2 class="section-title">Six Adventures. One Big Playground.</h2>
-      <p class="section-sub">Every path is a doorway to games and lessons hosted on our GigglyLearn blog — pick one and start exploring.</p>
+      <p class="section-sub">Every path is a doorway to games and lessons hosted on our Bouncy Learning blog — pick one and start exploring.</p>
     </div>
 
     <div class="adventure-path-wrap">
@@ -381,7 +383,7 @@
       </button>
     </div>
 
-    <p class="games-footnote">Looking for more? The full learning library lives on our <a href="https://yourblog.blogspot.com/" target="_blank" rel="noopener">GigglyLearn blog</a>.</p>
+    <p class="games-footnote">Looking for more? The full learning library lives on our <a href="https://yourblog.blogspot.com/" target="_blank" rel="noopener">Bouncy Learning blog</a>.</p>
   </section>
 
   <!-- ================= DAILY CHALLENGE ================= -->
@@ -476,7 +478,7 @@
       <div class="parents-copy">
         <span class="eyebrow">👨‍👩‍👧 For Parents</span>
         <h2 class="section-title">Built On Trust, Designed For Screen-Time Peace Of Mind</h2>
-        <p class="section-sub">GigglyLearn keeps kids engaged in learning, not endless scrolling — with tools that keep you in the loop.</p>
+        <p class="section-sub">Bouncy Learning keeps kids engaged in learning, not endless scrolling — with tools that keep you in the loop.</p>
 
         <div class="parents-cards">
           <div class="parent-card reveal-up">
@@ -587,7 +589,7 @@
     <div class="footer-brand">
       <a href="#home" class="brand">
         <svg width="34" height="34" viewBox="0 0 200 200" aria-hidden="true"><ellipse cx="100" cy="120" rx="55" ry="60" fill="#FACC15"/><circle cx="78" cy="105" r="20" fill="#1E1B2E"/><circle cx="122" cy="105" r="20" fill="#1E1B2E"/><circle cx="78" cy="105" r="7" fill="#fff"/><circle cx="122" cy="105" r="7" fill="#fff"/><path d="M92 128 L100 140 L108 128 Z" fill="#EC4899"/></svg>
-        <span class="brand-name brand-name--footer">Giggly<span class="brand-accent">Learn</span></span>
+        <span class="brand-name brand-name--footer">Bouncy<span class="brand-accent">Learning</span></span>
       </a>
       <p>Turning childhood curiosity into lifelong love of learning — one game at a time.</p>
       <div class="social-icons">
@@ -630,30 +632,78 @@
   </div>
 
   <div class="footer-bottom">
-    <p>© <span id="year"></span> GigglyLearn. All rights reserved. Made with 💜 for curious minds.</p>
+    <p>© <span id="year"></span> Bouncy Learning. All rights reserved. Made with 💜 for curious minds.</p>
   </div>
 </footer>
 
+<!-- ================= PLAYER PROFILE ================= -->
+<div id="profileOverlay" class="profile-overlay" role="dialog" aria-modal="true" aria-label="Your Profile">
+  <div class="profile-panel glass-panel">
+    <button class="arcade-close" id="profileClose" aria-label="Close profile">✕</button>
+    <div class="profile-avatar-big" id="profileAvatarBig">🦉</div>
+    <input type="text" id="profileNameInput" class="profile-name-input" maxlength="14" aria-label="Your name" />
+    <div class="profile-level-row">
+      <span id="profileLevelLabel" class="profile-level-chip">Level 1</span>
+      <span class="profile-coins-chip">🪙 <span id="profileCoins">0</span></span>
+    </div>
+    <div class="profile-xp-track"><div class="profile-xp-bar" id="profileXpBar"></div></div>
+    <span class="profile-xp-label" id="profileXpLabel">0 / 200 XP</span>
+
+    <div class="profile-stats-row">
+      <div class="profile-stat"><strong id="profileGamesPlayed">0</strong><span>Games Played</span></div>
+      <div class="profile-stat"><strong id="profileBestScore">0</strong><span>Best Score</span></div>
+    </div>
+
+    <h4 class="profile-section-title">Choose Your Avatar</h4>
+    <div class="profile-avatar-grid" id="profileAvatarGrid"></div>
+
+    <h4 class="profile-section-title">Badges</h4>
+    <div class="profile-badge-grid" id="profileBadgeGrid"></div>
+  </div>
+</div>
+
 <!-- ================= LOCAL MULTIPLAYER ARCADE ================= -->
-<div id="arcadeOverlay" class="arcade-overlay" role="dialog" aria-modal="true" aria-label="GigglyLearn Arcade">
+<div id="arcadeOverlay" class="arcade-overlay" role="dialog" aria-modal="true" aria-label="Bouncy Learning Arcade">
+  <!-- Continuously-moving decorative layer -->
+  <div class="arcade-deco" aria-hidden="true">
+    <span class="deco deco--cloud1">☁️</span>
+    <span class="deco deco--cloud2">☁️</span>
+    <span class="deco deco--balloon1">🎈</span>
+    <span class="deco deco--balloon2">🎈</span>
+    <span class="deco deco--sparkle1">✨</span>
+    <span class="deco deco--sparkle2">✨</span>
+    <span class="deco deco--puzzle">🧩</span>
+    <span class="deco deco--abc">A</span>
+    <span class="deco deco--star">⭐</span>
+  </div>
+
   <button class="arcade-close" id="arcadeClose" aria-label="Close arcade">✕</button>
+  <button class="icon-btn arcade-mute-btn" id="arcadeMuteBtn" data-mute-toggle aria-label="Mute sounds">🔊</button>
 
   <!-- Screen 1: Player setup -->
   <div class="arcade-screen" id="screenSetup">
-    <span class="eyebrow eyebrow--light">🎮 Local Multiplayer</span>
-    <h2 class="arcade-heading">Who's Playing?</h2>
+    <div class="arcade-header-strip">
+      <span class="arcade-mascot" id="arcadeMascot">🦉</span>
+      <div class="arcade-header-text">
+        <span class="eyebrow eyebrow--light">🎮 Local Multiplayer</span>
+        <h2 class="arcade-heading">Welcome to Bouncy Arcade</h2>
+      </div>
+    </div>
     <p class="arcade-sub">Everyone shares this device — pick a player count and choose your avatars.</p>
 
     <div class="player-count-row" id="playerCountRow">
-      <button class="count-btn" data-count="1">Play Alone</button>
-      <button class="count-btn" data-count="2">2 Players</button>
-      <button class="count-btn" data-count="3">3 Players</button>
-      <button class="count-btn" data-count="4">4 Players</button>
+      <button class="count-card" data-count="1"><span class="count-illustration">🧑‍🎓</span><strong>Play Alone</strong><small>Solo practice &amp; high scores</small></button>
+      <button class="count-card" data-count="2"><span class="count-illustration">🧑‍🤝‍🧑</span><strong>2 Players</strong><small>Head-to-head races</small></button>
+      <button class="count-card" data-count="3"><span class="count-illustration">👨‍👩‍👧</span><strong>3 Players</strong><small>Triple threat battles</small></button>
+      <button class="count-card" data-count="4"><span class="count-illustration">👨‍👩‍👧‍👦</span><strong>4 Players</strong><small>Full squad showdown</small></button>
     </div>
 
     <div class="player-setup-list" id="playerSetupList"></div>
 
-    <button class="cta-btn cta-btn--primary ripple arcade-next-btn" id="toGameSelect">Choose A Game →</button>
+    <div class="setup-bottom-row">
+      <button class="cta-btn cta-btn--ghost" id="resetAllPlayersBtn">↺ Reset All</button>
+      <button class="cta-btn cta-btn--primary ripple arcade-next-btn" id="toGameSelect">Choose A Game →</button>
+    </div>
   </div>
 
   <!-- Screen 2: Game select -->
@@ -661,12 +711,34 @@
     <button class="arcade-back" id="backToSetup">← Change Players</button>
     <h2 class="arcade-heading">Pick Your Game</h2>
     <p class="arcade-sub" id="gameSelectSub">Choose an adventure — every game supports your group.</p>
+
+    <input type="text" id="gameSearchInput" class="game-search-input" placeholder="🔍 Search games, skills, or difficulty…" aria-label="Search games" />
+    <div class="category-row" id="categoryRow"></div>
+
     <div class="arcade-game-grid" id="arcadeGameGrid"></div>
+  </div>
+
+  <!-- Screen 2.5: Game intro (Phase 2 — beautiful intro + tutorial before play) -->
+  <div class="arcade-screen" id="screenGameIntro">
+    <button class="arcade-back" id="backToSelectFromIntro">← All Games</button>
+    <div class="intro-card">
+      <div class="intro-icon" id="introIcon">🎮</div>
+      <h2 class="arcade-heading" id="introTitle">Game Title</h2>
+      <p class="arcade-sub" id="introGoal">Educational goal</p>
+      <div class="intro-meta-grid" id="introMetaGrid"></div>
+      <div class="intro-actions">
+        <button class="cta-btn cta-btn--primary ripple" id="introPlayBtn">▶ Play</button>
+        <button class="cta-btn cta-btn--ghost" id="introTutorialBtn">📖 Tutorial</button>
+      </div>
+    </div>
   </div>
 
   <!-- Screen 3: Playing -->
   <div class="arcade-screen arcade-screen--play" id="screenPlay">
-    <button class="arcade-back" id="quitGame">← Quit Game</button>
+    <div class="play-top-row">
+      <button class="arcade-back" id="quitGame">← Quit Game</button>
+      <button class="icon-btn pause-btn" id="pauseGameBtn" aria-label="Pause game">⏸</button>
+    </div>
     <div class="player-hud" id="playerHud"></div>
     <div class="arcade-stage" id="arcadeStage"></div>
   </div>
@@ -678,6 +750,7 @@
     <div class="results-actions">
       <button class="cta-btn cta-btn--primary ripple" id="playAgainBtn">Play Again</button>
       <button class="cta-btn cta-btn--ghost" id="pickAnotherBtn">Choose Another Game</button>
+      <button class="cta-btn cta-btn--ghost" id="returnHomeBtn">🏠 Return Home</button>
     </div>
   </div>
 </div>
@@ -688,6 +761,8 @@
 <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
 <script src="script.js"></script>
+<script src="sound.js"></script>
+<script src="profile.js"></script>
 <script src="arcade.js"></script>
 </body>
 </html>
