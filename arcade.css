@@ -369,3 +369,35 @@
 .reaction-box.pulse-glow{ animation:reactionPulse .5s ease-in-out infinite; }
 @keyframes reactionPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(250,204,21,.6);} 50%{ box-shadow:0 0 0 14px rgba(250,204,21,0);} }
 
+/* =========================================================
+   PHASE 2C — 12 new games (additive)
+   ========================================================= */
+
+/* ---------- balloon-style options (ABC Balloon Pop) ---------- */
+.balloon-btn{ background:transparent !important; padding:0; }
+.balloon-shape{
+  display:flex; align-items:center; justify-content:center; width:64px; height:78px; margin:0 auto;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; background:linear-gradient(160deg,var(--pink),var(--violet));
+  color:#fff; font-family:var(--font-data); font-weight:700; font-size:22px; position:relative;
+  animation:balloonBob 2.6s ease-in-out infinite; box-shadow:0 10px 20px -8px rgba(0,0,0,.4);
+}
+.balloon-shape::after{ content:''; position:absolute; bottom:-14px; left:50%; width:2px; height:14px; background:rgba(255,255,255,.5); }
+@keyframes balloonBob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+.opt-btn.balloon-btn.is-correct .balloon-shape{ background:linear-gradient(160deg,var(--green),#0d9668); }
+.opt-btn.balloon-btn.is-wrong .balloon-shape{ transform:scale(.6); opacity:.4; }
+
+/* ---------- emoji-only options (Emoji Match Race) ---------- */
+.emoji-only-btn{ font-size:38px; padding:20px; }
+
+/* ---------- Spot the Difference grid ---------- */
+.stage-instruction{ font-size:14px; color:rgba(255,255,255,.75) !important; margin:0; }
+.oddoneout-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; max-width:280px; }
+.oddoneout-tile{
+  aspect-ratio:1; border-radius:14px; background:rgba(255,255,255,.1); font-size:30px; display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, background .2s ease;
+}
+.oddoneout-tile:hover:not(:disabled){ transform:scale(1.06); background:rgba(255,255,255,.18); }
+.oddoneout-tile.is-flash-hint{ animation:flashHint .6s ease-in-out infinite; }
+@keyframes flashHint{ 0%,100%{ box-shadow:0 0 0 0 rgba(250,204,21,.7);} 50%{ box-shadow:0 0 0 8px rgba(250,204,21,0);} }
+.oddoneout-tile.is-correct-tile{ background:rgba(16,185,129,.4); }
+.oddoneout-tile.is-wrong-tile{ background:rgba(236,72,153,.4); }
