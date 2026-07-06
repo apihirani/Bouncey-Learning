@@ -99,15 +99,15 @@
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const PATTERN_SHAPES = ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠'];
   const FLAGS = [
-    { flag: '🇺🇸', name: 'United States' }, { flag: '🇬🇧', name: 'United Kingdom' }, { flag: '🇫🇷', name: 'France' },
-    { flag: '🇯🇵', name: 'Japan' }, { flag: '🇮🇳', name: 'India' }, { flag: '🇧🇷', name: 'Brazil' },
-    { flag: '🇨🇦', name: 'Canada' }, { flag: '🇩🇪', name: 'Germany' }, { flag: '🇦🇺', name: 'Australia' }, { flag: '🇮🇹', name: 'Italy' }
+    { flag: '🇺🇸', name: 'United States', continent: 'North America' }, { flag: '🇬🇧', name: 'United Kingdom', continent: 'Europe' }, { flag: '🇫🇷', name: 'France', continent: 'Europe' },
+    { flag: '🇯🇵', name: 'Japan', continent: 'Asia' }, { flag: '🇮🇳', name: 'India', continent: 'Asia' }, { flag: '🇧🇷', name: 'Brazil', continent: 'South America' },
+    { flag: '🇨🇦', name: 'Canada', continent: 'North America' }, { flag: '🇩🇪', name: 'Germany', continent: 'Europe' }, { flag: '🇦🇺', name: 'Australia', continent: 'Oceania' }, { flag: '🇮🇹', name: 'Italy', continent: 'Europe' }
   ];
   const PLANETS = [
-    { name: 'Mercury', clue: 'The smallest planet, closest to the Sun.' }, { name: 'Venus', clue: 'The hottest planet, wrapped in thick clouds.' },
-    { name: 'Earth', clue: 'The only planet known to have life.' }, { name: 'Mars', clue: 'Known as the Red Planet.' },
-    { name: 'Jupiter', clue: 'The biggest planet in our solar system.' }, { name: 'Saturn', clue: 'Famous for its beautiful rings.' },
-    { name: 'Uranus', clue: 'An icy planet that spins on its side.' }, { name: 'Neptune', clue: 'The farthest planet from the Sun.' }
+    { name: 'Mercury', clue: 'The smallest planet, closest to the Sun.', orbit: '1st from the Sun' }, { name: 'Venus', clue: 'The hottest planet, wrapped in thick clouds.', orbit: '2nd from the Sun' },
+    { name: 'Earth', clue: 'The only planet known to have life.', orbit: '3rd from the Sun' }, { name: 'Mars', clue: 'Known as the Red Planet.', orbit: '4th from the Sun' },
+    { name: 'Jupiter', clue: 'The biggest planet in our solar system.', orbit: '5th from the Sun' }, { name: 'Saturn', clue: 'Famous for its beautiful rings.', orbit: '6th from the Sun' },
+    { name: 'Uranus', clue: 'An icy planet that spins on its side.', orbit: '7th from the Sun' }, { name: 'Neptune', clue: 'The farthest planet from the Sun.', orbit: '8th from the Sun' }
   ];
   const SCIENCE_TRIVIA = [
     { q: 'What do plants need to make their own food?', options: ['Sunlight', 'Moonlight', 'Sand', 'Ice'], correct: 0, explain: 'Plants use sunlight, water, and air to make food through photosynthesis.' },
@@ -120,11 +120,11 @@
     { q: 'What force pulls objects toward the ground?', options: ['Magnetism', 'Gravity', 'Friction', 'Electricity'], correct: 1, explain: 'Gravity is the force that pulls everything down toward Earth.' }
   ];
   const EMOJI_MATCH_POOL = [
-    { desc: 'A red juicy fruit that keeps the doctor away', emoji: '🍎' }, { desc: 'A tall animal with a very long neck', emoji: '🦒' },
-    { desc: 'A cold treat you eat in summer', emoji: '🍦' }, { desc: 'A vehicle with wings that flies in the sky', emoji: '✈️' },
-    { desc: 'A yellow curved fruit monkeys love', emoji: '🍌' }, { desc: 'A shape with three sides', emoji: '🔺' },
-    { desc: 'A bright ball of light in the night sky', emoji: '🌙' }, { desc: 'An insect that makes honey', emoji: '🐝' },
-    { desc: 'A cold, fluffy thing that falls in winter', emoji: '❄️' }, { desc: 'A big cat that roars and lives in Africa', emoji: '🦁' }
+    { desc: 'A red juicy fruit that keeps the doctor away', emoji: '🍎', category: 'Food' }, { desc: 'A tall animal with a very long neck', emoji: '🦒', category: 'Animal' },
+    { desc: 'A cold treat you eat in summer', emoji: '🍦', category: 'Food' }, { desc: 'A vehicle with wings that flies in the sky', emoji: '✈️', category: 'Transport' },
+    { desc: 'A yellow curved fruit monkeys love', emoji: '🍌', category: 'Food' }, { desc: 'A shape with three sides', emoji: '🔺', category: 'Shape' },
+    { desc: 'A bright ball of light in the night sky', emoji: '🌙', category: 'Sky' }, { desc: 'An insect that makes honey', emoji: '🐝', category: 'Animal' },
+    { desc: 'A cold, fluffy thing that falls in winter', emoji: '❄️', category: 'Weather' }, { desc: 'A big cat that roars and lives in Africa', emoji: '🦁', category: 'Animal' }
   ];
   const DIFF_PAIRS = [
     ['🍎', '🍏'], ['⭐', '🌟'], ['🔵', '🟣'], ['😀', '😃'], ['🐶', '🦊'], ['🌸', '🌼'], ['🍋', '🍊'], ['🐱', '🐯'], ['🔴', '🟠'], ['🎈', '🎉']
@@ -157,6 +157,7 @@
     const display = seq.map((v, i) => (i === blankPos ? '❓' : v)).join('  ,  ');
     const options = distractorSet(correct, step).map(v => ({ label: String(v), correct: v === correct }));
     return { promptType: 'text', promptValue: display, optType: 'text', options,
+      hintText: `It's between ${correct - step} and ${correct + step}`,
       explain: `The pattern adds ${step} each time, so the missing number is ${correct}.` };
   }
 
@@ -194,6 +195,7 @@
     }
     const options = shuffle([...variants]).map(v => ({ label: v, correct: v === correct }));
     return { promptType: 'text', promptValue: `${target.hint} How do you spell this?`, optType: 'text', options,
+      hintText: `It starts with "${correct[0]}"`,
       explain: `${target.word} is spelled ${target.word.split('').join('-')}.` };
   }
 
@@ -205,7 +207,10 @@
     const display = word.split('').map((c, i) => (i === blankIdx ? '_' : c)).join('');
     const distractors = shuffle(ALPHABET.filter(l => l !== correct)).slice(0, 3);
     const options = shuffle([correct, ...distractors]).map(l => ({ label: l, correct: l === correct }));
+    const correctPos = ALPHABET.indexOf(correct);
+    const neighbors = [ALPHABET[correctPos - 1], ALPHABET[correctPos + 1]].filter(Boolean).join(' or ');
     return { promptType: 'text', promptValue: `${target.hint} ${display}`, optType: 'text', options,
+      hintText: `It's near "${neighbors}" in the alphabet`,
       explain: `The word is ${word} — say it slowly to hear each letter.` };
   }
 
@@ -216,6 +221,7 @@
     const distractors = shuffle(PATTERN_SHAPES.filter(s => s !== a && s !== b)).slice(0, 3);
     const options = shuffle([correct, ...distractors]).map(s => ({ label: s, emoji: s, correct: s === correct }));
     return { promptType: 'text', promptValue: `${sequence.join(' ')} ?`, optType: 'emoji', options,
+      hintText: `The pattern alternates ${a} and ${b}`,
       explain: `The pattern repeats every 2 shapes: ${a} then ${b}.` };
   }
 
@@ -224,6 +230,7 @@
     const distractors = shuffle(FLAGS.filter(f => f.name !== correctFlag.name)).slice(0, 3);
     const options = shuffle([correctFlag, ...distractors]).map(f => ({ label: f.name, correct: f.name === correctFlag.name }));
     return { promptType: 'text', promptValue: `<span style="font-size:60px">${correctFlag.flag}</span><br>Which country's flag is this?`, optType: 'text', options,
+      hintText: `It's in ${correctFlag.continent}`,
       explain: `${correctFlag.flag} is the flag of ${correctFlag.name}.` };
   }
 
@@ -232,6 +239,7 @@
     const distractors = shuffle(PLANETS.filter(p => p.name !== correctPlanet.name)).slice(0, 3);
     const options = shuffle([correctPlanet, ...distractors]).map(p => ({ label: p.name, correct: p.name === correctPlanet.name }));
     return { promptType: 'text', promptValue: correctPlanet.clue, optType: 'text', options,
+      hintText: `It's the ${correctPlanet.orbit}`,
       explain: `${correctPlanet.name} — ${correctPlanet.clue}` };
   }
 
@@ -246,6 +254,7 @@
     const distractors = shuffle(EMOJI_MATCH_POOL.filter(e => e.emoji !== correctItem.emoji)).slice(0, 3);
     const options = shuffle([correctItem, ...distractors]).map(e => ({ label: '', emoji: e.emoji, correct: e.emoji === correctItem.emoji }));
     return { promptType: 'text', promptValue: correctItem.desc, optType: 'emojionly', options,
+      hintText: `It's in the "${correctItem.category}" category`,
       explain: `${correctItem.emoji} matches: "${correctItem.desc}"` };
   }
 
@@ -321,37 +330,37 @@
     countFruits: { title: 'Count the Fruits', icon: '🍓', desc: 'Count the fruits and tap the right number.', type: 'mcq', roundFn: countFruitsRound, timeLimit: 7000, turnsPerPlayer: 5,
       category: 'Math', skill: 'Counting', difficulty: 'Easy', age: '5–7', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
       tutorial: ['A row of fruit emoji appears.', 'Count them carefully.', 'Tap the number that matches how many you counted.'] },
-    missingNumber: { title: 'Missing Number', icon: '🔢', desc: 'Find the missing number in the pattern.', type: 'mcq', roundFn: missingNumberRound, timeLimit: 8000, turnsPerPlayer: 5,
+    missingNumber: { title: 'Missing Number', icon: '🔢', desc: 'Find the missing number in the pattern.', type: 'mcq', roundFn: missingNumberRound, timeLimit: 8000, turnsPerPlayer: 5, hintLabel: '🔍 Reveal Range',
       category: 'Math', skill: 'Number Patterns', difficulty: 'Medium', age: '7–10', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
       tutorial: ['A number sequence appears with one number missing.', 'Work out the pattern (like +2 each time).', 'Tap the number that completes the pattern.'] },
-    multiplicationMaster: { title: 'Multiplication Master', icon: '✖️', desc: 'Solve multiplication problems fast.', type: 'mcq', roundFn: multiplicationRound, timeLimit: 8000, turnsPerPlayer: 5,
+    multiplicationMaster: { title: 'Multiplication Master', icon: '✖️', desc: 'Solve multiplication problems fast.', type: 'mcq', roundFn: multiplicationRound, timeLimit: 8000, turnsPerPlayer: 5, hintLabel: '💡 Remove Wrong Answer',
       category: 'Math', skill: 'Multiplication', difficulty: 'Hard', age: '8–12', estTime: '5 min', xpReward: 50, coinReward: 10, starReward: 2, isNew: true,
       tutorial: ['A multiplication problem like 6 × 7 appears.', 'Pick the correct answer from 4 choices.', 'Use a hint if a problem stumps you!'] },
-    abcBalloonPop: { title: 'ABC Balloon Pop', icon: '🎈', desc: 'Pop the balloon with the right letter.', type: 'mcq', roundFn: abcBalloonRound, timeLimit: 6000, turnsPerPlayer: 5,
+    abcBalloonPop: { title: 'ABC Balloon Pop', icon: '🎈', desc: 'Pop the balloon with the right letter.', type: 'mcq', roundFn: abcBalloonRound, timeLimit: 6000, turnsPerPlayer: 5, hintLabel: '🎈 Highlight Balloon',
       category: 'English', skill: 'Alphabet Sequence', difficulty: 'Easy', age: '5–7', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
       tutorial: ['You\'ll be asked what letter comes before or after another.', 'Pop the balloon with the correct letter.', 'Say the alphabet in your head if you need help!'] },
-    spellingBee: { title: 'Spelling Bee', icon: '🐝', desc: 'Pick the correctly spelled word.', type: 'mcq', roundFn: spellingBeeRound, timeLimit: 9000, turnsPerPlayer: 4,
+    spellingBee: { title: 'Spelling Bee', icon: '🐝', desc: 'Pick the correctly spelled word.', type: 'mcq', roundFn: spellingBeeRound, timeLimit: 9000, turnsPerPlayer: 4, hintLabel: '🔤 Reveal First Letter',
       category: 'English', skill: 'Spelling', difficulty: 'Medium', age: '7–11', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
       tutorial: ['A picture hint appears.', 'Four spellings are shown — only one is correct.', 'Tap the correctly spelled word.'] },
-    missingLetter: { title: 'Missing Letter Challenge', icon: '🔡', desc: 'Fill in the missing letter.', type: 'mcq', roundFn: missingLetterRound, timeLimit: 7000, turnsPerPlayer: 5,
+    missingLetter: { title: 'Missing Letter Challenge', icon: '🔡', desc: 'Fill in the missing letter.', type: 'mcq', roundFn: missingLetterRound, timeLimit: 7000, turnsPerPlayer: 5, hintLabel: '🔤 Reveal Nearby Letters',
       category: 'English', skill: 'Phonics', difficulty: 'Easy', age: '5–9', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
       tutorial: ['A word appears with one letter missing.', 'Sound the word out in your head.', 'Tap the letter that completes the word.'] },
-    patternMatch: { title: 'Pattern Match', icon: '🔷', desc: 'Work out what comes next in the pattern.', type: 'mcq', roundFn: patternMatchRound, timeLimit: 6500, turnsPerPlayer: 5,
+    patternMatch: { title: 'Pattern Match', icon: '🔷', desc: 'Work out what comes next in the pattern.', type: 'mcq', roundFn: patternMatchRound, timeLimit: 6500, turnsPerPlayer: 5, hintLabel: '🔷 Highlight Pattern',
       category: 'Brain', skill: 'Logical Patterns', difficulty: 'Easy', age: '5–9', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
       tutorial: ['A repeating pattern of shapes appears.', 'Figure out what shape comes next.', 'Tap the shape that continues the pattern.'] },
     spotDifference: { title: 'Spot the Difference', icon: '🔍', desc: 'Find the one tile that doesn\'t match.', type: 'oddOneOut', turnsPerPlayer: 4, timeLimit: 8000,
       category: 'Brain', skill: 'Visual Attention', difficulty: 'Medium', age: '6–11', estTime: '4 min', xpReward: 35, coinReward: 7, starReward: 2, isNew: true,
       tutorial: ['A grid fills with the same little icon.', 'One tile is secretly different from the rest.', 'Tap the odd one out as fast as you can!'] },
-    flagQuiz: { title: 'Flag Quiz', icon: '🏳️', desc: 'Match the flag to its country.', type: 'mcq', roundFn: flagQuizRound, timeLimit: 7000, turnsPerPlayer: 5,
+    flagQuiz: { title: 'Flag Quiz', icon: '🏳️', desc: 'Match the flag to its country.', type: 'mcq', roundFn: flagQuizRound, timeLimit: 7000, turnsPerPlayer: 5, hintLabel: '🌍 Reveal Continent',
       category: 'Knowledge', skill: 'World Geography', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
       tutorial: ['A country\'s flag appears.', 'Pick the country it belongs to.', 'Use a hint to narrow down the choices!'] },
-    solarSystem: { title: 'Solar System Explorer', icon: '🪐', desc: 'Identify planets from their clues.', type: 'mcq', roundFn: solarSystemRound, timeLimit: 8000, turnsPerPlayer: 4,
+    solarSystem: { title: 'Solar System Explorer', icon: '🪐', desc: 'Identify planets from their clues.', type: 'mcq', roundFn: solarSystemRound, timeLimit: 8000, turnsPerPlayer: 4, hintLabel: '🪐 Highlight Orbit',
       category: 'Knowledge', skill: 'Astronomy', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 45, coinReward: 9, starReward: 2, isNew: true,
       tutorial: ['A clue about a planet appears.', 'Think about our solar system.', 'Tap the planet that matches the clue.'] },
-    scienceQuest: { title: 'Science Quest', icon: '🔬', desc: 'Answer fun science questions.', type: 'mcq', roundFn: scienceQuestRound, timeLimit: 8000, turnsPerPlayer: 5,
+    scienceQuest: { title: 'Science Quest', icon: '🔬', desc: 'Answer fun science questions.', type: 'mcq', roundFn: scienceQuestRound, timeLimit: 8000, turnsPerPlayer: 5, hintLabel: '🔬 Remove One Option',
       category: 'Knowledge', skill: 'Science Facts', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 45, coinReward: 9, starReward: 2, isNew: true,
       tutorial: ['A science question appears.', 'Pick the answer you think is right.', 'Learn a new fact after every round!'] },
-    emojiMatchRace: { title: 'Emoji Match Race', icon: '🏁', desc: 'Match the description to the right emoji, fast!', type: 'mcq', roundFn: emojiMatchRound, timeLimit: 4500, turnsPerPlayer: 6,
+    emojiMatchRace: { title: 'Emoji Match Race', icon: '🏁', desc: 'Match the description to the right emoji, fast!', type: 'mcq', roundFn: emojiMatchRound, timeLimit: 4500, turnsPerPlayer: 6, hintLabel: '🏷️ Reveal Category',
       category: 'Multiplayer', skill: 'Visual Matching', difficulty: 'Easy', age: '5–12', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
       tutorial: ['A short description appears.', 'Four emoji options are shown.', 'Tap the emoji that matches the description — fast!'] }
   };
@@ -693,6 +702,7 @@
     else if (gameDef.type === 'reaction') startReactionGame(gameDef);
     else if (gameDef.type === 'puzzle') startPuzzleGame(gameDef);
     else if (gameDef.type === 'wordbuilder') startWordBuilderGame(gameDef);
+    else if (gameDef.type === 'oddOneOut') startOddOneOutGame(gameDef);
   }
 
   /* ---------------- pause menu ---------------- */
@@ -743,6 +753,7 @@
     else if (gameDef.type === 'reaction') playReactionTurn(gameDef);
     else if (gameDef.type === 'puzzle') playPuzzleTurn(gameDef);
     else if (gameDef.type === 'wordbuilder') playWordBuilderTurn(gameDef);
+    else if (gameDef.type === 'oddOneOut') playOddOneOutTurn(gameDef);
   }
 
   /* ================= MCQ ENGINE (color / math / treasure / animal) ================= */
@@ -789,7 +800,7 @@
       <div class="stage-timer-track"><div class="stage-timer-bar" id="stageTimerBar"></div></div>
       ${promptHtml}
       <div class="stage-options" id="stageOptions">${optionsHtml}</div>
-      <button class="hint-btn" id="hintBtn" title="Remove one wrong answer">💡 Hint</button>
+      <button class="hint-btn" id="hintBtn" title="Get a hint">${gameDef.hintLabel || '💡 Hint'}</button>
       <div class="stage-feedback" id="stageFeedback"></div>
     `;
 
@@ -811,13 +822,18 @@
     $('#hintBtn', arcadeStage).addEventListener('click', () => {
       if (hintUsed) return;
       hintUsed = true;
-      const buttons = $$('.opt-btn', arcadeStage);
-      const wrongIndexes = round.options.map((o, i) => (!o.correct ? i : -1)).filter(i => i > -1);
-      const toHide = pick(wrongIndexes);
-      buttons[toHide].disabled = true;
-      buttons[toHide].classList.add('is-hinted');
-      $('#hintBtn', arcadeStage).disabled = true;
-      $('#hintBtn', arcadeStage).textContent = '💡 Used';
+      const hintBtnEl = $('#hintBtn', arcadeStage);
+      hintBtnEl.disabled = true;
+      if (round.hintText) {
+        hintBtnEl.textContent = '✓ ' + round.hintText;
+      } else {
+        const buttons = $$('.opt-btn', arcadeStage);
+        const wrongIndexes = round.options.map((o, i) => (!o.correct ? i : -1)).filter(i => i > -1);
+        const toHide = pick(wrongIndexes);
+        buttons[toHide].disabled = true;
+        buttons[toHide].classList.add('is-hinted');
+        hintBtnEl.textContent = '💡 Used';
+      }
       if (window.BouncySound) window.BouncySound.play('click');
     });
   }
@@ -1332,6 +1348,105 @@
     const t = setTimeout(() => {
       S.session.turnIndex++;
       playWordBuilderTurn(gameDef);
+    }, 2000);
+    S.timers.push(t);
+  }
+
+  /* ================= SPOT THE DIFFERENCE (odd one out) ================= */
+  function startOddOneOutGame(gameDef) {
+    S.session.totalTurns = S.players.length * gameDef.turnsPerPlayer;
+    playOddOneOutTurn(gameDef);
+  }
+
+  function playOddOneOutTurn(gameDef) {
+    clearTimers();
+    if (S.session.turnIndex >= S.session.totalTurns) { endGame(); return; }
+    const pIdx = S.session.turnIndex % S.players.length;
+    const roundNum = Math.floor(S.session.turnIndex / S.players.length) + 1;
+    const player = S.players[pIdx];
+    renderHud(pIdx);
+
+    const [common, odd] = pick(DIFF_PAIRS);
+    const gridSize = 9;
+    const oddIndex = rand(0, gridSize - 1);
+    S.session.oddIndex = oddIndex;
+    S.session.oddPair = { common, odd };
+    S.session.hintUsed = false;
+
+    const tilesHtml = Array.from({ length: gridSize }).map((_, i) =>
+      `<button class="oddoneout-tile" data-idx="${i}">${i === oddIndex ? odd : common}</button>`).join('');
+
+    arcadeStage.innerHTML = `
+      <div class="stage-round-label">Turn ${S.session.turnIndex + 1} of ${S.session.totalTurns} · Round ${roundNum}</div>
+      <div class="stage-turn-banner">${AVATARS[player.avatarIdx].emoji} ${player.name}'s turn! ${player.combo >= 2 ? `<span class="combo-badge">🔥 Combo x${player.combo}</span>` : ''}</div>
+      <div class="stage-timer-track"><div class="stage-timer-bar" id="stageTimerBar"></div></div>
+      <p class="stage-instruction">Find the tile that doesn't match!</p>
+      <div class="oddoneout-grid">${tilesHtml}</div>
+      <button class="hint-btn" id="hintBtn">✨ Flash Hint</button>
+      <div class="stage-feedback" id="stageFeedback"></div>
+    `;
+    setTimerBar($('#stageTimerBar', arcadeStage), gameDef.timeLimit);
+    const startedAt = Date.now();
+
+    const timeoutId = setTimeout(() => resolveOddOneOut(gameDef, null, startedAt), gameDef.timeLimit);
+    S.timers.push(timeoutId);
+
+    $$('.oddoneout-tile', arcadeStage).forEach(btn => {
+      btn.addEventListener('click', () => {
+        clearTimeout(timeoutId);
+        if (window.BouncySound) window.BouncySound.play('click');
+        resolveOddOneOut(gameDef, parseInt(btn.dataset.idx, 10), startedAt);
+      });
+    });
+
+    $('#hintBtn', arcadeStage).addEventListener('click', () => {
+      if (S.session.hintUsed) return;
+      S.session.hintUsed = true;
+      const hintBtn = $('#hintBtn', arcadeStage);
+      hintBtn.disabled = true;
+      hintBtn.textContent = '✨ Used';
+      const tiles = $$('.oddoneout-tile', arcadeStage);
+      tiles[oddIndex].classList.add('is-flash-hint');
+      if (window.BouncySound) window.BouncySound.play('popup');
+    });
+  }
+
+  function resolveOddOneOut(gameDef, chosenIdx, startedAt) {
+    const pIdx = S.session.turnIndex % S.players.length;
+    const player = S.players[pIdx];
+    const tiles = $$('.oddoneout-tile', arcadeStage);
+    tiles.forEach(b => b.disabled = true);
+    const hintBtn = $('#hintBtn', arcadeStage);
+    if (hintBtn) hintBtn.disabled = true;
+
+    player.totalCount = (player.totalCount || 0) + 1;
+    const feedback = $('#stageFeedback', arcadeStage);
+    const { common, odd } = S.session.oddPair;
+
+    if (chosenIdx === S.session.oddIndex) {
+      player.correctCount = (player.correctCount || 0) + 1;
+      player.combo = (player.combo || 0) + 1;
+      player.maxCombo = Math.max(player.maxCombo || 0, player.combo);
+      const elapsed = Date.now() - startedAt;
+      const speedBonus = Math.max(0, Math.round((gameDef.timeLimit - elapsed) / gameDef.timeLimit * 10));
+      const comboBonus = player.combo >= 2 ? Math.min((player.combo - 1) * 3, 15) : 0;
+      const gained = 10 + speedBonus + comboBonus;
+      player.score += gained;
+      tiles[chosenIdx].classList.add('is-correct-tile');
+      feedback.innerHTML = `<span class="stage-feedback good">⭐ Great eye! +${gained} pts${comboBonus ? ` (🔥 +${comboBonus} combo)` : ''}</span><span class="stage-explain">You spotted ${odd} among all the ${common} tiles — sharp visual attention!</span>`;
+      if (window.BouncySound) window.BouncySound.play('correct');
+    } else {
+      player.combo = 0;
+      if (chosenIdx !== null && tiles[chosenIdx]) tiles[chosenIdx].classList.add('is-wrong-tile');
+      tiles[S.session.oddIndex].classList.add('is-correct-tile');
+      feedback.innerHTML = `<span class="stage-feedback bad">❌ ${chosenIdx === null ? "Time's up!" : 'Not quite!'}</span><span class="stage-explain">The odd one out was ${odd} among the ${common} tiles.</span>`;
+      if (window.BouncySound) window.BouncySound.play('wrong');
+    }
+    renderHud(pIdx);
+
+    const t = setTimeout(() => {
+      S.session.turnIndex++;
+      playOddOneOutTurn(gameDef);
     }, 2000);
     S.timers.push(t);
   }
