@@ -94,6 +94,161 @@
 
   const MEMORY_ICONS = ['🍎', '🚀', '🐝', '🎈', '🐳', '🌈', '🎵', '⭐', '🦋', '🍩', '🐢', '🔺'];
 
+  /* ---------------- Phase 2C content pools (12 new games) ---------------- */
+  const FRUITS = [{ e: '🍎', n: 'apples' }, { e: '🍌', n: 'bananas' }, { e: '🍇', n: 'grapes' }, { e: '🍓', n: 'strawberries' }, { e: '🍊', n: 'oranges' }, { e: '🍉', n: 'watermelons' }];
+  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const PATTERN_SHAPES = ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠'];
+  const FLAGS = [
+    { flag: '🇺🇸', name: 'United States' }, { flag: '🇬🇧', name: 'United Kingdom' }, { flag: '🇫🇷', name: 'France' },
+    { flag: '🇯🇵', name: 'Japan' }, { flag: '🇮🇳', name: 'India' }, { flag: '🇧🇷', name: 'Brazil' },
+    { flag: '🇨🇦', name: 'Canada' }, { flag: '🇩🇪', name: 'Germany' }, { flag: '🇦🇺', name: 'Australia' }, { flag: '🇮🇹', name: 'Italy' }
+  ];
+  const PLANETS = [
+    { name: 'Mercury', clue: 'The smallest planet, closest to the Sun.' }, { name: 'Venus', clue: 'The hottest planet, wrapped in thick clouds.' },
+    { name: 'Earth', clue: 'The only planet known to have life.' }, { name: 'Mars', clue: 'Known as the Red Planet.' },
+    { name: 'Jupiter', clue: 'The biggest planet in our solar system.' }, { name: 'Saturn', clue: 'Famous for its beautiful rings.' },
+    { name: 'Uranus', clue: 'An icy planet that spins on its side.' }, { name: 'Neptune', clue: 'The farthest planet from the Sun.' }
+  ];
+  const SCIENCE_TRIVIA = [
+    { q: 'What do plants need to make their own food?', options: ['Sunlight', 'Moonlight', 'Sand', 'Ice'], correct: 0, explain: 'Plants use sunlight, water, and air to make food through photosynthesis.' },
+    { q: 'What is the closest star to Earth?', options: ['The Moon', 'The Sun', 'Mars', 'Polaris'], correct: 1, explain: 'The Sun is a giant star and the closest one to our planet.' },
+    { q: 'What state of matter is ice?', options: ['Gas', 'Liquid', 'Solid', 'Plasma'], correct: 2, explain: 'Ice is water in its solid form, frozen because it\'s cold.' },
+    { q: 'Which body part pumps blood?', options: ['Lungs', 'Heart', 'Stomach', 'Brain'], correct: 1, explain: 'The heart pumps blood all around your body!' },
+    { q: 'What gas do humans breathe in to live?', options: ['Carbon Dioxide', 'Helium', 'Oxygen', 'Nitrogen'], correct: 2, explain: 'We breathe in oxygen and breathe out carbon dioxide.' },
+    { q: 'What do caterpillars turn into?', options: ['Bees', 'Butterflies', 'Beetles', 'Moths only'], correct: 1, explain: 'Caterpillars go through metamorphosis and become butterflies.' },
+    { q: 'Which planet do we live on?', options: ['Mars', 'Venus', 'Earth', 'Jupiter'], correct: 2, explain: 'We live on Earth, the third planet from the Sun.' },
+    { q: 'What force pulls objects toward the ground?', options: ['Magnetism', 'Gravity', 'Friction', 'Electricity'], correct: 1, explain: 'Gravity is the force that pulls everything down toward Earth.' }
+  ];
+  const EMOJI_MATCH_POOL = [
+    { desc: 'A red juicy fruit that keeps the doctor away', emoji: '🍎' }, { desc: 'A tall animal with a very long neck', emoji: '🦒' },
+    { desc: 'A cold treat you eat in summer', emoji: '🍦' }, { desc: 'A vehicle with wings that flies in the sky', emoji: '✈️' },
+    { desc: 'A yellow curved fruit monkeys love', emoji: '🍌' }, { desc: 'A shape with three sides', emoji: '🔺' },
+    { desc: 'A bright ball of light in the night sky', emoji: '🌙' }, { desc: 'An insect that makes honey', emoji: '🐝' },
+    { desc: 'A cold, fluffy thing that falls in winter', emoji: '❄️' }, { desc: 'A big cat that roars and lives in Africa', emoji: '🦁' }
+  ];
+  const DIFF_PAIRS = [
+    ['🍎', '🍏'], ['⭐', '🌟'], ['🔵', '🟣'], ['😀', '😃'], ['🐶', '🦊'], ['🌸', '🌼'], ['🍋', '🍊'], ['🐱', '🐯'], ['🔴', '🟠'], ['🎈', '🎉']
+  ];
+
+  function distractorSet(correctVal, spread) {
+    const set = new Set([correctVal]);
+    while (set.size < 4) {
+      const delta = rand(-spread, spread) || 1;
+      const v = correctVal + delta;
+      if (v >= 0) set.add(v);
+    }
+    return shuffle([...set]);
+  }
+
+  function countFruitsRound() {
+    const fruit = pick(FRUITS);
+    const count = rand(3, 9);
+    const options = distractorSet(count, 3).map(v => ({ label: String(v), correct: v === count }));
+    return { promptType: 'text', promptValue: fruit.e.repeat(count), optType: 'text', options,
+      explain: `There are ${count} ${fruit.n} — count them one by one to check!` };
+  }
+
+  function missingNumberRound() {
+    const start = rand(1, 10);
+    const step = rand(2, 5);
+    const seq = [start, start + step, start + step * 2, start + step * 3, start + step * 4];
+    const blankPos = rand(1, 3);
+    const correct = seq[blankPos];
+    const display = seq.map((v, i) => (i === blankPos ? '❓' : v)).join('  ,  ');
+    const options = distractorSet(correct, step).map(v => ({ label: String(v), correct: v === correct }));
+    return { promptType: 'text', promptValue: display, optType: 'text', options,
+      explain: `The pattern adds ${step} each time, so the missing number is ${correct}.` };
+  }
+
+  function multiplicationRound() {
+    const a = rand(2, 12), b = rand(2, 12), correct = a * b;
+    const options = distractorSet(correct, 8).map(v => ({ label: String(v), correct: v === correct }));
+    return { promptType: 'text', promptValue: `${a} × ${b} = ?`, optType: 'text', options,
+      explain: `${a} × ${b} = ${correct} — that's ${a} groups of ${b}.` };
+  }
+
+  function abcBalloonRound() {
+    const goForward = Math.random() < 0.5;
+    const idx = goForward ? rand(0, 24) : rand(1, 25);
+    const base = ALPHABET[idx];
+    const correct = goForward ? ALPHABET[idx + 1] : ALPHABET[idx - 1];
+    const distractors = shuffle(ALPHABET.filter(l => l !== correct && l !== base)).slice(0, 3);
+    const options = shuffle([correct, ...distractors]).map(l => ({ label: l, correct: l === correct }));
+    return { promptType: 'text', promptValue: `Which letter comes right ${goForward ? 'after' : 'before'} ${base}?`, optType: 'balloon', options,
+      explain: `In the alphabet, ${goForward ? `${base} is followed by ${correct}` : `${correct} comes right before ${base}`}.` };
+  }
+
+  function spellingBeeRound() {
+    const target = pick(WORDS);
+    const correct = target.word.toLowerCase();
+    const variants = new Set([correct]);
+    const chars = correct.split('');
+    while (variants.size < 4) {
+      const c = chars.slice();
+      const type = rand(0, 2);
+      if (type === 0 && c.length > 2) { const i = rand(0, c.length - 2); [c[i], c[i + 1]] = [c[i + 1], c[i]]; }
+      else if (type === 1) { c.splice(rand(0, c.length), 0, c[rand(0, c.length - 1)]); }
+      else { c[rand(0, c.length - 1)] = pick('abcdefghijklmnopqrstuvwxyz'.split('')); }
+      const variant = c.join('');
+      if (variant !== correct) variants.add(variant);
+    }
+    const options = shuffle([...variants]).map(v => ({ label: v, correct: v === correct }));
+    return { promptType: 'text', promptValue: `${target.hint} How do you spell this?`, optType: 'text', options,
+      explain: `${target.word} is spelled ${target.word.split('').join('-')}.` };
+  }
+
+  function missingLetterRound() {
+    const target = pick(WORDS);
+    const word = target.word;
+    const blankIdx = rand(0, word.length - 1);
+    const correct = word[blankIdx];
+    const display = word.split('').map((c, i) => (i === blankIdx ? '_' : c)).join('');
+    const distractors = shuffle(ALPHABET.filter(l => l !== correct)).slice(0, 3);
+    const options = shuffle([correct, ...distractors]).map(l => ({ label: l, correct: l === correct }));
+    return { promptType: 'text', promptValue: `${target.hint} ${display}`, optType: 'text', options,
+      explain: `The word is ${word} — say it slowly to hear each letter.` };
+  }
+
+  function patternMatchRound() {
+    const [a, b] = shuffle(PATTERN_SHAPES).slice(0, 2);
+    const sequence = [a, b, a, b, a];
+    const correct = b;
+    const distractors = shuffle(PATTERN_SHAPES.filter(s => s !== a && s !== b)).slice(0, 3);
+    const options = shuffle([correct, ...distractors]).map(s => ({ label: s, emoji: s, correct: s === correct }));
+    return { promptType: 'text', promptValue: `${sequence.join(' ')} ?`, optType: 'emoji', options,
+      explain: `The pattern repeats every 2 shapes: ${a} then ${b}.` };
+  }
+
+  function flagQuizRound() {
+    const correctFlag = pick(FLAGS);
+    const distractors = shuffle(FLAGS.filter(f => f.name !== correctFlag.name)).slice(0, 3);
+    const options = shuffle([correctFlag, ...distractors]).map(f => ({ label: f.name, correct: f.name === correctFlag.name }));
+    return { promptType: 'text', promptValue: `<span style="font-size:60px">${correctFlag.flag}</span><br>Which country's flag is this?`, optType: 'text', options,
+      explain: `${correctFlag.flag} is the flag of ${correctFlag.name}.` };
+  }
+
+  function solarSystemRound() {
+    const correctPlanet = pick(PLANETS);
+    const distractors = shuffle(PLANETS.filter(p => p.name !== correctPlanet.name)).slice(0, 3);
+    const options = shuffle([correctPlanet, ...distractors]).map(p => ({ label: p.name, correct: p.name === correctPlanet.name }));
+    return { promptType: 'text', promptValue: correctPlanet.clue, optType: 'text', options,
+      explain: `${correctPlanet.name} — ${correctPlanet.clue}` };
+  }
+
+  function scienceQuestRound() {
+    const item = pick(SCIENCE_TRIVIA);
+    const options = item.options.map((label, i) => ({ label, correct: i === item.correct }));
+    return { promptType: 'text', promptValue: item.q, optType: 'text', options: shuffle(options), explain: item.explain };
+  }
+
+  function emojiMatchRound() {
+    const correctItem = pick(EMOJI_MATCH_POOL);
+    const distractors = shuffle(EMOJI_MATCH_POOL.filter(e => e.emoji !== correctItem.emoji)).slice(0, 3);
+    const options = shuffle([correctItem, ...distractors]).map(e => ({ label: '', emoji: e.emoji, correct: e.emoji === correctItem.emoji }));
+    return { promptType: 'text', promptValue: correctItem.desc, optType: 'emojionly', options,
+      explain: `${correctItem.emoji} matches: "${correctItem.desc}"` };
+  }
+
   /* ---------------- round generators ---------------- */
   function colorRound() {
     const pool = shuffle(COLOR_POOL).slice(0, 4);
@@ -160,9 +315,47 @@
       tutorial: ['Tap the box, then wait for it to turn green.', 'Tap as fast as you can the moment it turns green.', 'Tap too early and you\'ll have to try again!'] },
     puzzleRace: { title: 'Puzzle Race', icon: '🧩', desc: 'Slide the tiles back into order.', type: 'puzzle', timeLimit: 30, turnsPerPlayer: 1,
       category: 'Puzzle', skill: 'Problem Solving', difficulty: 'Hard', age: '8–14', estTime: '3 min', xpReward: 50, coinReward: 10, starReward: 3, isNew: true,
-      tutorial: ['Tiles are scrambled around one empty space.', 'Tap a tile next to the empty space to slide it.', 'Arrange all tiles from 1 to 8 before time runs out!'] }
+      tutorial: ['Tiles are scrambled around one empty space.', 'Tap a tile next to the empty space to slide it.', 'Arrange all tiles from 1 to 8 before time runs out!'] },
+
+    /* -------- Phase 2C: 12 new games (reuse the same MCQ / oddOneOut engines) -------- */
+    countFruits: { title: 'Count the Fruits', icon: '🍓', desc: 'Count the fruits and tap the right number.', type: 'mcq', roundFn: countFruitsRound, timeLimit: 7000, turnsPerPlayer: 5,
+      category: 'Math', skill: 'Counting', difficulty: 'Easy', age: '5–7', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
+      tutorial: ['A row of fruit emoji appears.', 'Count them carefully.', 'Tap the number that matches how many you counted.'] },
+    missingNumber: { title: 'Missing Number', icon: '🔢', desc: 'Find the missing number in the pattern.', type: 'mcq', roundFn: missingNumberRound, timeLimit: 8000, turnsPerPlayer: 5,
+      category: 'Math', skill: 'Number Patterns', difficulty: 'Medium', age: '7–10', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
+      tutorial: ['A number sequence appears with one number missing.', 'Work out the pattern (like +2 each time).', 'Tap the number that completes the pattern.'] },
+    multiplicationMaster: { title: 'Multiplication Master', icon: '✖️', desc: 'Solve multiplication problems fast.', type: 'mcq', roundFn: multiplicationRound, timeLimit: 8000, turnsPerPlayer: 5,
+      category: 'Math', skill: 'Multiplication', difficulty: 'Hard', age: '8–12', estTime: '5 min', xpReward: 50, coinReward: 10, starReward: 2, isNew: true,
+      tutorial: ['A multiplication problem like 6 × 7 appears.', 'Pick the correct answer from 4 choices.', 'Use a hint if a problem stumps you!'] },
+    abcBalloonPop: { title: 'ABC Balloon Pop', icon: '🎈', desc: 'Pop the balloon with the right letter.', type: 'mcq', roundFn: abcBalloonRound, timeLimit: 6000, turnsPerPlayer: 5,
+      category: 'English', skill: 'Alphabet Sequence', difficulty: 'Easy', age: '5–7', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
+      tutorial: ['You\'ll be asked what letter comes before or after another.', 'Pop the balloon with the correct letter.', 'Say the alphabet in your head if you need help!'] },
+    spellingBee: { title: 'Spelling Bee', icon: '🐝', desc: 'Pick the correctly spelled word.', type: 'mcq', roundFn: spellingBeeRound, timeLimit: 9000, turnsPerPlayer: 4,
+      category: 'English', skill: 'Spelling', difficulty: 'Medium', age: '7–11', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
+      tutorial: ['A picture hint appears.', 'Four spellings are shown — only one is correct.', 'Tap the correctly spelled word.'] },
+    missingLetter: { title: 'Missing Letter Challenge', icon: '🔡', desc: 'Fill in the missing letter.', type: 'mcq', roundFn: missingLetterRound, timeLimit: 7000, turnsPerPlayer: 5,
+      category: 'English', skill: 'Phonics', difficulty: 'Easy', age: '5–9', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
+      tutorial: ['A word appears with one letter missing.', 'Sound the word out in your head.', 'Tap the letter that completes the word.'] },
+    patternMatch: { title: 'Pattern Match', icon: '🔷', desc: 'Work out what comes next in the pattern.', type: 'mcq', roundFn: patternMatchRound, timeLimit: 6500, turnsPerPlayer: 5,
+      category: 'Brain', skill: 'Logical Patterns', difficulty: 'Easy', age: '5–9', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
+      tutorial: ['A repeating pattern of shapes appears.', 'Figure out what shape comes next.', 'Tap the shape that continues the pattern.'] },
+    spotDifference: { title: 'Spot the Difference', icon: '🔍', desc: 'Find the one tile that doesn\'t match.', type: 'oddOneOut', turnsPerPlayer: 4, timeLimit: 8000,
+      category: 'Brain', skill: 'Visual Attention', difficulty: 'Medium', age: '6–11', estTime: '4 min', xpReward: 35, coinReward: 7, starReward: 2, isNew: true,
+      tutorial: ['A grid fills with the same little icon.', 'One tile is secretly different from the rest.', 'Tap the odd one out as fast as you can!'] },
+    flagQuiz: { title: 'Flag Quiz', icon: '🏳️', desc: 'Match the flag to its country.', type: 'mcq', roundFn: flagQuizRound, timeLimit: 7000, turnsPerPlayer: 5,
+      category: 'Knowledge', skill: 'World Geography', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 40, coinReward: 8, starReward: 2, isNew: true,
+      tutorial: ['A country\'s flag appears.', 'Pick the country it belongs to.', 'Use a hint to narrow down the choices!'] },
+    solarSystem: { title: 'Solar System Explorer', icon: '🪐', desc: 'Identify planets from their clues.', type: 'mcq', roundFn: solarSystemRound, timeLimit: 8000, turnsPerPlayer: 4,
+      category: 'Knowledge', skill: 'Astronomy', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 45, coinReward: 9, starReward: 2, isNew: true,
+      tutorial: ['A clue about a planet appears.', 'Think about our solar system.', 'Tap the planet that matches the clue.'] },
+    scienceQuest: { title: 'Science Quest', icon: '🔬', desc: 'Answer fun science questions.', type: 'mcq', roundFn: scienceQuestRound, timeLimit: 8000, turnsPerPlayer: 5,
+      category: 'Knowledge', skill: 'Science Facts', difficulty: 'Medium', age: '8–13', estTime: '4 min', xpReward: 45, coinReward: 9, starReward: 2, isNew: true,
+      tutorial: ['A science question appears.', 'Pick the answer you think is right.', 'Learn a new fact after every round!'] },
+    emojiMatchRace: { title: 'Emoji Match Race', icon: '🏁', desc: 'Match the description to the right emoji, fast!', type: 'mcq', roundFn: emojiMatchRound, timeLimit: 4500, turnsPerPlayer: 6,
+      category: 'Multiplayer', skill: 'Visual Matching', difficulty: 'Easy', age: '5–12', estTime: '3 min', xpReward: 30, coinReward: 6, starReward: 1, isNew: true,
+      tutorial: ['A short description appears.', 'Four emoji options are shown.', 'Tap the emoji that matches the description — fast!'] }
   };
-  const CATEGORIES = ['All', 'Math', 'English', 'Brain', 'Educational', 'Memory', 'Puzzle', 'Multiplayer', 'Logic'];
+  const CATEGORIES = ['All', 'Math', 'English', 'Brain', 'Knowledge', 'Educational', 'Memory', 'Puzzle', 'Multiplayer', 'Logic'];
   const DIFFICULTY_DOT = { Easy: '🟢', Medium: '🟡', Hard: '🔴' };
 
   /* ---------------- state ---------------- */
@@ -580,6 +773,10 @@
         return `<button class="opt-btn color-swatch" style="background:${opt.bg}" data-idx="${i}" aria-label="${opt.label}"></button>`;
       } else if (round.optType === 'emoji') {
         return `<button class="opt-btn" data-idx="${i}">${opt.emoji} ${opt.label}</button>`;
+      } else if (round.optType === 'balloon') {
+        return `<button class="opt-btn balloon-btn" data-idx="${i}"><span class="balloon-shape">${opt.label}</span></button>`;
+      } else if (round.optType === 'emojionly') {
+        return `<button class="opt-btn emoji-only-btn" data-idx="${i}" aria-label="option ${i + 1}">${opt.emoji}</button>`;
       }
       return `<button class="opt-btn" data-idx="${i}">${opt.label}</button>`;
     }).join('');
