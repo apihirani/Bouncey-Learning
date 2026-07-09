@@ -89,6 +89,29 @@
     { id: 'combo_n', desc: n => `Reach a ${n}x combo`, target: 3, key: 'maxComboToday', rewardXp: 20, rewardCoins: 10 }
   ];
 
+  /* ---------------- weekly mission templates ---------------- */
+  const WEEKLY_TEMPLATES = [
+    { id: 'play_40', icon: '🎮', title: 'Marathon Player', desc: 'Play 40 games', target: 40, key: 'gamesThisWeek', rewardXp: 150, rewardCoins: 60, rewardStars: 5 },
+    { id: 'win_25', icon: '🥇', title: 'Winning Streak', desc: 'Finish 25 multiplayer games', target: 25, key: 'multiplayerThisWeek', rewardXp: 150, rewardCoins: 60, rewardStars: 5 },
+    { id: 'xp_5000', icon: '✨', title: 'XP Hunter', desc: 'Earn 5000 XP', target: 5000, key: 'xpThisWeek', rewardXp: 200, rewardCoins: 80, rewardStars: 6 },
+    { id: 'stars_400', icon: '⭐', title: 'Star Collector', desc: 'Earn 400 stars', target: 400, key: 'starsThisWeek', rewardXp: 180, rewardCoins: 70, rewardStars: 8 },
+    { id: 'math_20', icon: '🧮', title: 'Math Marathon', desc: 'Complete 20 Math games', target: 20, key: 'catMathThisWeek', rewardXp: 150, rewardCoins: 60, rewardStars: 5 },
+    { id: 'english_20', icon: '📚', title: 'Word Marathon', desc: 'Complete 20 English games', target: 20, key: 'catEnglishThisWeek', rewardXp: 150, rewardCoins: 60, rewardStars: 5 },
+    { id: 'combo_15', icon: '🔥', title: 'Combo Master', desc: 'Reach a combo of 15', target: 15, key: 'maxComboThisWeek', rewardXp: 180, rewardCoins: 70, rewardStars: 6 },
+    { id: 'correct_300', icon: '📝', title: 'Answer Machine', desc: 'Solve 300 correct answers', target: 300, key: 'correctThisWeek', rewardXp: 200, rewardCoins: 80, rewardStars: 6 }
+  ];
+
+  /* ---------------- monthly challenge templates ---------------- */
+  const MONTHLY_TEMPLATES = [
+    { id: 'knowledge_champion', icon: '🏛️', title: 'Knowledge Champion', desc: 'Play 15 Knowledge games this month', target: 15, key: 'catKnowledgeThisMonth', lifetime: false, rewardXp: 300, rewardCoins: 120, badge: '🏛️' },
+    { id: 'ultimate_explorer', icon: '🧭', title: 'Ultimate Explorer', desc: 'Play every game category in one month', target: 6, key: 'distinctCategoriesThisMonth', lifetime: false, rewardXp: 350, rewardCoins: 140, badge: '🧭' },
+    { id: 'puzzle_master', icon: '🧩', title: 'Puzzle Master', desc: 'Play 15 Brain/Puzzle games this month', target: 15, key: 'catPuzzleThisMonth', lifetime: false, rewardXp: 300, rewardCoins: 120, badge: '🧩' },
+    { id: 'reading_hero', icon: '📖', title: 'Reading Hero', desc: 'Play 15 English games this month', target: 15, key: 'catEnglishThisMonth', lifetime: false, rewardXp: 300, rewardCoins: 120, badge: '📖' },
+    { id: 'math_genius', icon: '➗', title: 'Math Genius', desc: 'Play 15 Math games this month', target: 15, key: 'catMathThisMonth', lifetime: false, rewardXp: 300, rewardCoins: 120, badge: '➗' },
+    { id: 'family_champion', icon: '👨‍👩‍👧‍👦', title: 'Family Champion', desc: 'Finish 40 multiplayer matches this month', target: 40, key: 'multiplayerThisMonth', lifetime: false, rewardXp: 350, rewardCoins: 140, badge: '👨‍👩‍👧‍👦' },
+    { id: 'learning_legend', icon: '👑', title: 'Learning Legend', desc: 'Reach Level 25 (lifetime)', target: 25, key: 'levelLifetime', lifetime: true, rewardXp: 500, rewardCoins: 200, badge: '👑' }
+  ];
+
   function todayStr() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -121,6 +144,48 @@
     }));
   }
 
+  /* ---------------- week / month keys (for Weekly Missions & Monthly Challenges) ---------------- */
+  function weekInfo() {
+    const now = new Date();
+    const day = (now.getDay() + 6) % 7; // Monday = 0
+    const monday = new Date(now);
+    monday.setHours(0, 0, 0, 0);
+    monday.setDate(now.getDate() - day);
+    const nextMonday = new Date(monday);
+    nextMonday.setDate(monday.getDate() + 7);
+    const key = `${monday.getFullYear()}-W${String(Math.ceil((((monday - new Date(monday.getFullYear(), 0, 1)) / 86400000) + 1) / 7)).padStart(2, '0')}`;
+    return { key, resetsAt: nextMonday };
+  }
+  function monthInfo() {
+    const now = new Date();
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return { key, resetsAt: nextFirst };
+  }
+  function formatCountdown(target) {
+    const ms = target - new Date();
+    if (ms <= 0) return 'resetting…';
+    const days = Math.floor(ms / 86400000);
+    const hours = Math.floor((ms % 86400000) / 3600000);
+    return days > 0 ? `resets in ${days}d ${hours}h` : `resets in ${hours}h`;
+  }
+
+  function generateWeeklyMissions(weekKey) {
+    const templates = seededPick(weekKey, WEEKLY_TEMPLATES, 6);
+    return templates.map(t => ({
+      id: t.id, icon: t.icon, title: t.title, desc: t.desc, target: t.target, key: t.key,
+      progress: 0, rewardXp: t.rewardXp, rewardCoins: t.rewardCoins, rewardStars: t.rewardStars, completed: false, claimed: false
+    }));
+  }
+  function generateMonthlyChallenges() {
+    // All 7 shown every month (thematic, not randomized) — progress resets monthly except lifetime ones.
+    return MONTHLY_TEMPLATES.map(t => ({
+      id: t.id, icon: t.icon, title: t.title, desc: t.desc, target: t.target, key: t.key, lifetime: !!t.lifetime,
+      progress: 0, rewardXp: t.rewardXp, rewardCoins: t.rewardCoins, badge: t.badge, completed: false, claimed: false
+    }));
+  }
+
   /* ---------------- 30-day login reward cycle ---------------- */
   function rewardForDay(day) {
     const d = ((day - 1) % 30) + 1;
@@ -140,7 +205,9 @@
       totalQuestions: 0, leaderboard: {},
       dailyLogin: { lastDate: null, streak: 0, claimedToday: false },
       dailyQuests: { date: null, quests: [] },
-      dailyQuestDaysCompleted: 0
+      dailyQuestDaysCompleted: 0,
+      weeklyMissions: { weekKey: null, missions: [] },
+      monthlyChallenges: { monthKey: null, challenges: [] }
     };
   }
 
@@ -155,6 +222,8 @@
       merged.leaderboard = Object.assign({}, parsed.leaderboard);
       merged.dailyLogin = Object.assign({ lastDate: null, streak: 0, claimedToday: false }, parsed.dailyLogin);
       merged.dailyQuests = Object.assign({ date: null, quests: [] }, parsed.dailyQuests);
+      merged.weeklyMissions = Object.assign({ weekKey: null, missions: [] }, parsed.weeklyMissions);
+      merged.monthlyChallenges = Object.assign({ monthKey: null, challenges: [] }, parsed.monthlyChallenges);
       return merged;
     } catch (e) { return defaultState(); }
   }
@@ -176,6 +245,99 @@
     }
   }
   ensureDailyQuests();
+
+  /* ---------------- weekly mission lifecycle ---------------- */
+  function ensureWeeklyMissions() {
+    const { key } = weekInfo();
+    if (state.weeklyMissions.weekKey !== key) {
+      state.weeklyMissions = { weekKey: key, missions: generateWeeklyMissions(key) };
+      state.weeklyCounters = { gamesThisWeek: 0, multiplayerThisWeek: 0, xpThisWeek: 0, starsThisWeek: 0, maxComboThisWeek: 0, correctThisWeek: 0, catMathThisWeek: 0, catEnglishThisWeek: 0 };
+      save();
+    } else if (!state.weeklyCounters) {
+      state.weeklyCounters = { gamesThisWeek: 0, multiplayerThisWeek: 0, xpThisWeek: 0, starsThisWeek: 0, maxComboThisWeek: 0, correctThisWeek: 0, catMathThisWeek: 0, catEnglishThisWeek: 0 };
+    }
+  }
+  ensureWeeklyMissions();
+
+  function updateWeeklyProgress(payload, rewards) {
+    ensureWeeklyMissions();
+    const wc = state.weeklyCounters;
+    wc.gamesThisWeek += 1;
+    if (payload.isMultiplayer) wc.multiplayerThisWeek += 1;
+    wc.xpThisWeek += rewards.xp;
+    wc.starsThisWeek += rewards.stars;
+    wc.maxComboThisWeek = Math.max(wc.maxComboThisWeek, payload.maxCombo || 0);
+    wc.correctThisWeek += (payload.accuracy !== null ? Math.round(((payload.questionsAnswered || 0) * (payload.accuracy / 100))) : 0);
+    if (payload.category === 'Math') wc.catMathThisWeek += 1;
+    if (payload.category === 'English') wc.catEnglishThisWeek += 1;
+
+    state.weeklyMissions.missions.forEach(m => {
+      if (m.completed) return;
+      m.progress = wc[m.key] || 0;
+      if (m.progress >= m.target) m.completed = true;
+    });
+  }
+
+  function claimWeeklyMission(id) {
+    const m = state.weeklyMissions.missions.find(x => x.id === id);
+    if (!m || !m.completed || m.claimed) return;
+    m.claimed = true;
+    state.xp += m.rewardXp;
+    state.coins += m.rewardCoins;
+    state.totalStars += (m.rewardStars || 0);
+    save();
+    toast(`<span class="bl-toast-icon">🏅</span> Weekly mission claimed! +${m.rewardXp} XP, +${m.rewardCoins} coins`);
+    if (window.BouncySound) window.BouncySound.play('coin');
+    if (typeof window.fireConfetti === 'function') window.fireConfetti(70);
+    renderProfileButton();
+    renderProfilePanel();
+  }
+
+  /* ---------------- monthly challenge lifecycle ---------------- */
+  function ensureMonthlyChallenges() {
+    const { key } = monthInfo();
+    if (state.monthlyChallenges.monthKey !== key) {
+      state.monthlyChallenges = { monthKey: key, challenges: generateMonthlyChallenges() };
+      state.monthlyCounters = { catKnowledgeThisMonth: 0, catPuzzleThisMonth: 0, catEnglishThisMonth: 0, catMathThisMonth: 0, multiplayerThisMonth: 0, distinctCategoriesSetThisMonth: [] };
+      save();
+    } else if (!state.monthlyCounters) {
+      state.monthlyCounters = { catKnowledgeThisMonth: 0, catPuzzleThisMonth: 0, catEnglishThisMonth: 0, catMathThisMonth: 0, multiplayerThisMonth: 0, distinctCategoriesSetThisMonth: [] };
+    }
+  }
+  ensureMonthlyChallenges();
+
+  function updateMonthlyProgress(payload) {
+    ensureMonthlyChallenges();
+    const mc = state.monthlyCounters;
+    if (payload.category === 'Knowledge') mc.catKnowledgeThisMonth += 1;
+    if (payload.category === 'Puzzle' || payload.category === 'Brain') mc.catPuzzleThisMonth += 1;
+    if (payload.category === 'English') mc.catEnglishThisMonth += 1;
+    if (payload.category === 'Math') mc.catMathThisMonth += 1;
+    if (payload.isMultiplayer) mc.multiplayerThisMonth += 1;
+    if (payload.category && !mc.distinctCategoriesSetThisMonth.includes(payload.category)) mc.distinctCategoriesSetThisMonth.push(payload.category);
+    mc.distinctCategoriesThisMonth = mc.distinctCategoriesSetThisMonth.length;
+
+    state.monthlyChallenges.challenges.forEach(c => {
+      if (c.completed) return;
+      c.progress = c.lifetime ? (c.key === 'levelLifetime' ? levelFromXp(state.xp) : (state.badges.length)) : (mc[c.key] || 0);
+      if (c.progress >= c.target) c.completed = true;
+    });
+  }
+
+  function claimMonthlyChallenge(id) {
+    const c = state.monthlyChallenges.challenges.find(x => x.id === id);
+    if (!c || !c.completed || c.claimed) return;
+    c.claimed = true;
+    state.xp += c.rewardXp;
+    state.coins += c.rewardCoins;
+    if (c.badge && !state.badges.includes('monthly_' + c.id)) state.badges.push('monthly_' + c.id);
+    save();
+    toast(`<span class="bl-toast-icon">${c.badge}</span> ${c.title} complete! +${c.rewardXp} XP, +${c.rewardCoins} coins`, 3000);
+    if (window.BouncySound) window.BouncySound.play('levelup');
+    if (typeof window.fireConfetti === 'function') window.fireConfetti(120);
+    renderProfileButton();
+    renderProfilePanel();
+  }
 
   function updateQuestProgress(payload, starsEarned) {
     ensureDailyQuests();
@@ -288,6 +450,8 @@
     state.leaderboard[payload.gameId] = state.leaderboard[payload.gameId].sort((a, b) => b.score - a.score).slice(0, 3);
 
     updateQuestProgress(payload, rewards.stars);
+    updateWeeklyProgress(payload, rewards);
+    updateMonthlyProgress(payload);
 
     const newlyUnlocked = [];
     BADGES.forEach(b => {
@@ -384,6 +548,8 @@
 
     renderStatsGrid();
     renderQuestList();
+    renderWeeklyList();
+    renderMonthlyList();
     renderLeaderboardList();
     renderDailyButton();
   }
@@ -420,6 +586,58 @@
       </div>`;
     }).join('');
     $$('.quest-claim-btn', list).forEach(btn => btn.addEventListener('click', () => claimQuest(btn.dataset.quest)));
+  }
+
+  function renderWeeklyList() {
+    ensureWeeklyMissions();
+    const list = $('#weeklyMissionList');
+    const countdownEl = $('#weeklyCountdown');
+    if (countdownEl) countdownEl.textContent = formatCountdown(weekInfo().resetsAt);
+    if (!list) return;
+    list.innerHTML = state.weeklyMissions.missions.map(m => {
+      const pct = Math.min(100, Math.round((m.progress / m.target) * 100));
+      return `<div class="mission-card ${m.completed ? 'is-complete' : ''}">
+        <div class="mission-card-icon">${m.icon}</div>
+        <div class="mission-card-body">
+          <div class="mission-card-title">${m.title}</div>
+          <div class="mission-card-desc">${m.desc}</div>
+          <div class="quest-progress-track"><div class="quest-progress-bar" style="width:${pct}%"></div></div>
+          <div class="mission-card-bottom">
+            <span>${Math.min(m.progress, m.target)}/${m.target}</span>
+            ${m.completed
+              ? (m.claimed
+                ? `<span class="quest-claimed-label">✅ Claimed</span>`
+                : `<button class="cta-btn cta-btn--primary quest-claim-btn" data-weekly="${m.id}">Claim +${m.rewardXp} XP</button>`)
+              : `<span class="quest-reward-label">+${m.rewardXp} XP, +${m.rewardCoins} 🪙, +${m.rewardStars} ⭐</span>`}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    $$('[data-weekly]', list).forEach(btn => btn.addEventListener('click', () => claimWeeklyMission(btn.dataset.weekly)));
+  }
+
+  function renderMonthlyList() {
+    ensureMonthlyChallenges();
+    const list = $('#monthlyChallengeList');
+    const countdownEl = $('#monthlyCountdown');
+    if (countdownEl) countdownEl.textContent = formatCountdown(monthInfo().resetsAt);
+    if (!list) return;
+    list.innerHTML = state.monthlyChallenges.challenges.map(c => {
+      const pct = Math.min(100, Math.round((c.progress / c.target) * 100));
+      return `<div class="challenge-card ${c.completed ? 'is-complete' : ''}">
+        <div class="challenge-card-icon">${c.icon}</div>
+        <div class="challenge-card-title">${c.title}</div>
+        <div class="challenge-card-desc">${c.desc}</div>
+        <div class="quest-progress-track"><div class="quest-progress-bar" style="width:${pct}%"></div></div>
+        <div class="challenge-card-pct">${pct}%</div>
+        ${c.completed
+          ? (c.claimed
+            ? `<span class="quest-claimed-label">✅ Claimed</span>`
+            : `<button class="cta-btn cta-btn--primary quest-claim-btn" data-monthly="${c.id}">Claim +${c.rewardXp} XP, +${c.rewardCoins} 🪙</button>`)
+          : `<span class="quest-reward-label">Reward: +${c.rewardXp} XP, +${c.rewardCoins} 🪙, badge ${c.badge}</span>`}
+      </div>`;
+    }).join('');
+    $$('[data-monthly]', list).forEach(btn => btn.addEventListener('click', () => claimMonthlyChallenge(btn.dataset.monthly)));
   }
 
   const GAME_TITLES = {
