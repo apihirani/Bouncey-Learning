@@ -657,6 +657,8 @@
     <div class="profile-tabs" id="profileTabs">
       <button class="profile-tab is-active" data-tab="overview">Overview</button>
       <button class="profile-tab" data-tab="quests">Quests</button>
+      <button class="profile-tab" data-tab="weekly">Weekly</button>
+      <button class="profile-tab" data-tab="monthly">Monthly</button>
       <button class="profile-tab" data-tab="stats">Stats</button>
       <button class="profile-tab" data-tab="scores">Top Scores</button>
       <button class="profile-tab" data-tab="badges">Badges</button>
@@ -674,6 +676,16 @@
     <div class="profile-tab-panel" data-panel="quests">
       <h4 class="profile-section-title">Today's Quests</h4>
       <div class="quest-list" id="questList"></div>
+    </div>
+
+    <div class="profile-tab-panel" data-panel="weekly">
+      <h4 class="profile-section-title">Weekly Missions <span class="reset-countdown" id="weeklyCountdown"></span></h4>
+      <div class="mission-list" id="weeklyMissionList"></div>
+    </div>
+
+    <div class="profile-tab-panel" data-panel="monthly">
+      <h4 class="profile-section-title">Monthly Challenges <span class="reset-countdown" id="monthlyCountdown"></span></h4>
+      <div class="challenge-list" id="monthlyChallengeList"></div>
     </div>
 
     <div class="profile-tab-panel" data-panel="stats">
