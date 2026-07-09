@@ -1483,6 +1483,7 @@
 
     const rewardsBanner = document.createElement('div');
     rewardsBanner.className = 'results-rewards';
+    rewardsBanner.id = 'resultsRewardsBanner';
     rewardsBanner.innerHTML = `
       <span title="Skill practiced">🧩 ${gameDef.skill}</span>
       <span title="XP earned">✨ +${gameDef.xpReward} XP</span>
@@ -1495,12 +1496,33 @@
     if (window.BouncySound) window.BouncySound.play('win');
     if (typeof window.fireConfetti === 'function') window.fireConfetti(isSolo ? 60 : 140);
 
-    // Additive hook: award XP/coins/badges via the Player Profile system if present.
+    // Additive hook: award XP/coins/badges/stats via the Player Profile system if present.
     if (window.BouncyProfile && typeof window.BouncyProfile.recordGameResult === 'function') {
-      window.BouncyProfile.recordGameResult({
+      const top = ranked[0];
+      const accuracy = top.totalCount ? Math.round((top.correctCount / top.totalCount) * 100) : null;
+      const rewards = window.BouncyProfile.recordGameResult({
         gameId: S.session.gameId,
-        winningScore: ranked[0].score
+        category: gameDef.category,
+        winningScore: top.score,
+        winnerName: top.name,
+        isMultiplayer: !isSolo,
+        accuracy,
+        maxCombo: top.maxCombo || 0,
+        questionsAnswered: top.totalCount || 0,
+        solveTimeSeconds: top.bestSolveTime || null,
+        baseXp: gameDef.xpReward,
+        baseCoins: gameDef.coinReward,
+        baseStars: gameDef.starReward
       });
+      // Reflect the real (accuracy/combo/speed-adjusted) reward once computed.
+      if (rewards) {
+        rewardsBanner.innerHTML = `
+          <span title="Skill practiced">🧩 ${gameDef.skill}</span>
+          <span title="XP earned">✨ +${rewards.xp} XP${rewards.xpBonus ? ' 🔥' : ''}</span>
+          <span title="Coins earned">🪙 +${rewards.coins}</span>
+          <span title="Stars earned">${'⭐'.repeat(rewards.stars)}${'☆'.repeat(3 - rewards.stars)}</span>
+        `;
+      }
     }
   }
 
