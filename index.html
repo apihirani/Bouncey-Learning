@@ -642,23 +642,54 @@
     <button class="arcade-close" id="profileClose" aria-label="Close profile">✕</button>
     <div class="profile-avatar-big" id="profileAvatarBig">🦉</div>
     <input type="text" id="profileNameInput" class="profile-name-input" maxlength="14" aria-label="Your name" />
+    <span class="profile-tier-label" id="profileTierLabel">Little Learner</span>
+
     <div class="profile-level-row">
       <span id="profileLevelLabel" class="profile-level-chip">Level 1</span>
       <span class="profile-coins-chip">🪙 <span id="profileCoins">0</span></span>
+      <span class="profile-stars-chip">⭐ <span id="profileTotalStars">0</span></span>
     </div>
     <div class="profile-xp-track"><div class="profile-xp-bar" id="profileXpBar"></div></div>
     <span class="profile-xp-label" id="profileXpLabel">0 / 200 XP</span>
 
-    <div class="profile-stats-row">
-      <div class="profile-stat"><strong id="profileGamesPlayed">0</strong><span>Games Played</span></div>
-      <div class="profile-stat"><strong id="profileBestScore">0</strong><span>Best Score</span></div>
+    <button class="cta-btn cta-btn--ghost profile-daily-btn" id="profileDailyBtn">🎁 Daily Reward <span id="profileStreakFlame"></span></button>
+
+    <div class="profile-tabs" id="profileTabs">
+      <button class="profile-tab is-active" data-tab="overview">Overview</button>
+      <button class="profile-tab" data-tab="quests">Quests</button>
+      <button class="profile-tab" data-tab="stats">Stats</button>
+      <button class="profile-tab" data-tab="scores">Top Scores</button>
+      <button class="profile-tab" data-tab="badges">Badges</button>
     </div>
 
-    <h4 class="profile-section-title">Choose Your Avatar</h4>
-    <div class="profile-avatar-grid" id="profileAvatarGrid"></div>
+    <div class="profile-tab-panel is-active" data-panel="overview">
+      <div class="profile-stats-row">
+        <div class="profile-stat"><strong id="profileGamesPlayed">0</strong><span>Games Played</span></div>
+        <div class="profile-stat"><strong id="profileBestScore">0</strong><span>Best Score</span></div>
+      </div>
+      <h4 class="profile-section-title">Choose Your Avatar</h4>
+      <div class="profile-avatar-grid" id="profileAvatarGrid"></div>
+    </div>
 
-    <h4 class="profile-section-title">Badges</h4>
-    <div class="profile-badge-grid" id="profileBadgeGrid"></div>
+    <div class="profile-tab-panel" data-panel="quests">
+      <h4 class="profile-section-title">Today's Quests</h4>
+      <div class="quest-list" id="questList"></div>
+    </div>
+
+    <div class="profile-tab-panel" data-panel="stats">
+      <h4 class="profile-section-title">Learning Statistics</h4>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <div class="profile-tab-panel" data-panel="scores">
+      <h4 class="profile-section-title">Your Best Scores</h4>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+    </div>
+
+    <div class="profile-tab-panel" data-panel="badges">
+      <h4 class="profile-section-title">Achievements</h4>
+      <div class="profile-badge-grid" id="profileBadgeGrid"></div>
+    </div>
   </div>
 </div>
 
