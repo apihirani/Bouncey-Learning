@@ -478,6 +478,91 @@ button{font-family:inherit; cursor:pointer; border:none; background:none;}
 /* =========================== REVEAL (GSAP hooks, fallback base state) ==== */
 .reveal-up{ opacity:0; transform:translateY(34px); }
 
+/* =========================================================
+   Homepage premium upgrade — nav stat chips, hero tagline/daily
+   card, and the live Rewards Dashboard section.
+   ========================================================= */
+
+/* ---------- navbar stat chips ---------- */
+.nav-stat-chips{ display:flex; gap:6px; margin-right:4px; }
+@media (max-width:860px){ .nav-stat-chips{ display:none; } }
+.nav-chip{
+  font-family:var(--font-data); font-weight:700; font-size:12.5px; padding:6px 12px; border-radius:999px;
+  background:rgba(124,58,237,.08); color:var(--violet); display:inline-flex; align-items:center; gap:3px;
+}
+[data-theme="dark"] .nav-chip{ background:rgba(201,182,255,.12); color:#C9B6FF; }
+
+/* ---------- hero tagline ---------- */
+.hero-tagline{
+  font-family:var(--font-data); font-weight:700; font-size:14px; letter-spacing:.12em; margin-bottom:10px;
+  background:linear-gradient(90deg,var(--violet),var(--pink),var(--yellow),var(--violet));
+  background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:taglineShift 6s linear infinite;
+}
+@keyframes taglineShift{ to{ background-position:300% center; } }
+.tagline-dot{ color:var(--yellow); -webkit-text-fill-color:var(--yellow); }
+@media (max-width:960px){ .hero-tagline{ text-align:center; } }
+
+/* ---------- hero daily reward card ---------- */
+.hero-daily-card{
+  position:absolute; top:8%; right:-8%; display:flex; align-items:center; gap:10px; padding:12px 18px;
+  background:linear-gradient(120deg,#fff,#FFF8E1); border-radius:18px; box-shadow:var(--shadow-card);
+  border:2px solid transparent; animation:floatY 5s ease-in-out infinite 1.2s; max-width:200px; text-align:left;
+}
+.hero-daily-card.is-claimable{ border-color:var(--yellow); }
+.hero-daily-icon{ font-size:26px; }
+.hero-daily-text{ display:flex; flex-direction:column; font-size:11px; color:var(--text-muted); }
+.hero-daily-text strong{ font-family:var(--font-display); font-size:13px; color:var(--text); }
+.hero-daily-sparkle{ font-size:14px; animation:decoTwinkle 2s ease-in-out infinite; }
+@media (max-width:1100px){ .hero-daily-card{ display:none; } }
+
+/* ---------- extra hero floaters ---------- */
+.hf--fox{ bottom:16%; left:22%; font-size:30px; animation:floatY 6.5s ease-in-out infinite 0.3s; }
+.hf--rabbit{ top:36%; left:4%; font-size:26px; animation:floatY 7.5s ease-in-out infinite 1.6s; }
+.hf--rainbow{ top:4%; left:38%; font-size:30px; opacity:.85; animation:floatY 9s ease-in-out infinite; }
+
+/* ---------- rewards dashboard section ---------- */
+.dashboard-section{ background:var(--surface); border-radius:48px; }
+.dashboard-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; gap:22px; }
+@media (max-width:1100px){ .dashboard-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:640px){ .dashboard-grid{ grid-template-columns:1fr; } }
+
+.dash-card{
+  background:var(--cream-2); border-radius:var(--radius-md); padding:24px; box-shadow:var(--shadow-card);
+  display:flex; flex-direction:column;
+}
+.dash-card h3{ font-family:var(--font-display); font-size:15.5px; margin-bottom:14px; color:var(--text); }
+
+.dash-progress-top{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.dash-avatar{ font-size:38px; }
+.dash-name{ font-family:var(--font-display); font-size:15px; color:var(--text); }
+.dash-tier{ font-family:var(--font-data); font-size:11px; color:var(--violet); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
+[data-theme="dark"] .dash-tier{ color:#C9B6FF; }
+.dash-xp-track{ width:100%; height:8px; background:rgba(124,58,237,.12); border-radius:99px; overflow:hidden; margin-bottom:6px; }
+.dash-xp-bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--violet),var(--pink)); border-radius:99px; transition:width .6s ease; }
+.dash-xp-label{ font-family:var(--font-data); font-size:11px; color:var(--text-muted); margin-bottom:16px; }
+.dash-mini-stats{ display:flex; gap:16px; font-family:var(--font-data); font-weight:700; font-size:13px; color:var(--text); margin-bottom:18px; }
+.dash-open-profile-btn{ margin-top:auto; width:100%; justify-content:center; padding:10px; font-size:13px; }
+
+.dash-mini-quest{ margin-bottom:12px; font-size:12.5px; color:var(--text); }
+.dash-mini-quest span{ display:block; margin-bottom:5px; }
+
+.dash-badge-preview{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; min-height:36px; }
+.dash-badge-icon{
+  width:40px; height:40px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:19px; box-shadow:var(--shadow-card);
+}
+
+.dash-mini-score{ display:flex; justify-content:space-between; font-size:12px; color:var(--text); margin-bottom:10px; }
+.dash-mini-score strong{ color:var(--violet); font-family:var(--font-data); }
+[data-theme="dark"] .dash-mini-score strong{ color:#C9B6FF; }
+
+.dash-empty-note{ font-size:12px; color:var(--text-muted); margin-bottom:16px; }
+.dash-link-btn{
+  margin-top:auto; align-self:flex-start; font-family:var(--font-data); font-weight:700; font-size:12px; color:var(--violet);
+}
+[data-theme="dark"] .dash-link-btn{ color:#C9B6FF; }
+
 /* focus visibility for accessibility */
 a:focus-visible, button:focus-visible, input:focus-visible{
   outline:3px solid var(--cyan); outline-offset:3px; border-radius:6px;
