@@ -70,6 +70,7 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="#home">Home</a>
       <a href="#play-zone">Play Zone</a>
+      <a href="#rewards-dashboard">Rewards</a>
       <a href="#learn-hub">Learn Hub</a>
       <a href="#brain-challenge">Brain Challenge</a>
       <a href="#parents-zone">Parents Zone</a>
@@ -78,6 +79,10 @@
     </nav>
 
     <div class="nav-actions">
+      <div class="nav-stat-chips" id="navStatChips" aria-hidden="true">
+        <span class="nav-chip" title="Coins">🪙 <span id="navCoins">0</span></span>
+        <span class="nav-chip" title="Stars">⭐ <span id="navStars">0</span></span>
+      </div>
       <button class="icon-btn" id="searchToggle" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
@@ -103,6 +108,7 @@
 <div id="mobileMenu" class="mobile-menu">
   <a href="#home">Home</a>
   <a href="#play-zone">Play Zone</a>
+  <a href="#rewards-dashboard">Rewards</a>
   <a href="#learn-hub">Learn Hub</a>
   <a href="#brain-challenge">Brain Challenge</a>
   <a href="#parents-zone">Parents Zone</a>
@@ -130,16 +136,21 @@
       <div class="hf hf--abc">B</div>
       <div class="hf hf--puzzle"></div>
       <div class="hf hf--mathsym">÷</div>
+      <div class="hf hf--fox" title="Smart Fox">🦊</div>
+      <div class="hf hf--rabbit" title="Curious Rabbit">🐰</div>
+      <div class="hf hf--rainbow">🌈</div>
     </div>
 
     <div class="hero-inner">
       <div class="hero-copy">
         <span class="eyebrow-pill">🎈 Loved by 40,000+ curious kids</span>
+        <div class="hero-tagline">LEARN <span class="tagline-dot">•</span> PLAY <span class="tagline-dot">•</span> GROW</div>
         <h1 class="hero-title">Where Learning<br/><span class="text-gradient">Meets Fun</span></h1>
         <p class="hero-sub">Turn education into exciting adventures through games, challenges, and interactive learning — built for kids, trusted by parents.</p>
         <div class="hero-cta-row">
           <button class="cta-btn cta-btn--primary ripple" data-open-arcade>🎮 Play Games</button>
           <a href="https://yourblog.blogspot.com/search/label/Learn" target="_blank" rel="noopener" class="cta-btn cta-btn--ghost ripple">📚 Start Learning</a>
+          <button class="cta-btn cta-btn--ghost ripple" id="heroRewardsBtn">🎁 Daily Rewards</button>
         </div>
         <div class="hero-stats">
           <div class="stat"><span class="stat-num" data-count="500">0</span><span class="stat-plus">+</span><span class="stat-label">Games &amp; Quizzes</span></div>
@@ -183,10 +194,66 @@
           <svg viewBox="0 0 40 40" width="24"><rect x="10" y="14" width="20" height="18" rx="4" fill="#06B6D4"/><circle cx="16" cy="22" r="2.5" fill="#fff"/><circle cx="24" cy="22" r="2.5" fill="#fff"/><rect x="17" y="26" width="6" height="2" rx="1" fill="#fff"/><rect x="17" y="6" width="6" height="8" fill="#06B6D4"/><circle cx="20" cy="5" r="2.5" fill="#EC4899"/></svg>
           <span>Level Up!</span>
         </div>
+
+        <button class="hero-daily-card" id="heroDailyCard">
+          <span class="hero-daily-icon">🎁</span>
+          <span class="hero-daily-text">
+            <strong>Daily Reward</strong>
+            <span id="heroDailyStreak">Streak: —</span>
+          </span>
+          <span class="hero-daily-sparkle">✨</span>
+        </button>
       </div>
     </div>
 
     <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,64 C240,120 480,0 720,32 C960,64 1200,112 1440,64 L1440,120 L0,120 Z"></path></svg>
+  </section>
+
+  <!-- ================= REWARDS DASHBOARD (live data from the Player Profile system) ================= -->
+  <section id="rewards-dashboard" class="section dashboard-section">
+    <div class="section-head reveal-up">
+      <span class="eyebrow">📊 Your Progress</span>
+      <h2 class="section-title">Everything You've Earned, In One Place</h2>
+      <p class="section-sub">This updates live from your actual play — no fake numbers.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dash-card dash-card--progress reveal-up">
+        <div class="dash-progress-top">
+          <span class="dash-avatar" id="dashAvatar">🦉</span>
+          <div>
+            <div class="dash-name" id="dashName">Explorer</div>
+            <div class="dash-tier" id="dashTier">Little Learner</div>
+          </div>
+        </div>
+        <div class="dash-xp-track"><div class="dash-xp-bar" id="dashXpBar"></div></div>
+        <div class="dash-xp-label" id="dashXpLabel">Level 1 · 0/100 XP</div>
+        <div class="dash-mini-stats">
+          <span>🪙 <strong id="dashCoins">0</strong></span>
+          <span>⭐ <strong id="dashStars">0</strong></span>
+          <span>🏅 <strong id="dashBadges">0</strong></span>
+        </div>
+        <button class="cta-btn cta-btn--primary ripple dash-open-profile-btn" data-open-profile>View Full Profile</button>
+      </div>
+
+      <div class="dash-card dash-card--quests reveal-up">
+        <h3>🎯 Today's Quests</h3>
+        <div class="dash-quest-preview" id="dashQuestPreview"></div>
+        <button class="dash-link-btn" data-open-profile data-tab-target="quests">See all quests →</button>
+      </div>
+
+      <div class="dash-card dash-card--badges reveal-up">
+        <h3>🏆 Recent Achievements</h3>
+        <div class="dash-badge-preview" id="dashBadgePreview"></div>
+        <button class="dash-link-btn" data-open-profile data-tab-target="badges">See all badges →</button>
+      </div>
+
+      <div class="dash-card dash-card--leaderboard reveal-up">
+        <h3>📈 Your Top Scores</h3>
+        <div class="dash-leaderboard-preview" id="dashLeaderboardPreview"></div>
+        <button class="dash-link-btn" data-open-profile data-tab-target="scores">See full leaderboard →</button>
+      </div>
+    </div>
   </section>
 
   <!-- ================= FEATURE / CATEGORY SECTION ================= -->
