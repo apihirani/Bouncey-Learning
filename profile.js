@@ -501,9 +501,76 @@
   /* ---------------- navbar button ---------------- */
   function renderProfileButton() {
     const btn = $('#profileToggle');
-    if (!btn) return;
-    const level = levelFromXp(state.xp);
-    btn.innerHTML = `<span class="profile-btn-avatar">${AVATARS[state.avatarIdx].emoji}</span><span class="profile-btn-level">${level}</span>`;
+    if (btn) {
+      const level = levelFromXp(state.xp);
+      btn.innerHTML = `<span class="profile-btn-avatar">${AVATARS[state.avatarIdx].emoji}</span><span class="profile-btn-level">${level}</span>`;
+    }
+    const navCoins = $('#navCoins');
+    const navStars = $('#navStars');
+    if (navCoins) navCoins.textContent = state.coins;
+    if (navStars) navStars.textContent = state.totalStars;
+    renderHomepageWidgets();
+  }
+
+  /* ---------------- homepage widgets (hero daily card + rewards dashboard) ---------------- */
+  function renderHomepageWidgets() {
+    ensureWeeklyMissions(); ensureMonthlyChallenges(); ensureDailyQuests();
+    const { level, into, need } = xpIntoCurrentLevel(state.xp);
+    const pct = level >= 100 ? 100 : Math.round((into / need) * 100);
+
+    const heroStreak = $('#heroDailyStreak');
+    if (heroStreak) {
+      heroStreak.textContent = state.dailyLogin.claimedToday
+        ? `Streak: ${state.dailyLogin.streak} 🔥 (claimed today)`
+        : `Streak: ${state.dailyLogin.streak} 🔥 — tap to claim!`;
+    }
+    const heroCard = $('#heroDailyCard');
+    if (heroCard) heroCard.classList.toggle('is-claimable', !state.dailyLogin.claimedToday);
+
+    const dashAvatar = $('#dashAvatar');
+    if (dashAvatar) dashAvatar.textContent = AVATARS[state.avatarIdx].emoji;
+    const dashName = $('#dashName');
+    if (dashName) dashName.textContent = state.name;
+    const dashTier = $('#dashTier');
+    if (dashTier) dashTier.textContent = tierNameForLevel(level);
+    const dashXpBar = $('#dashXpBar');
+    if (dashXpBar) dashXpBar.style.width = `${pct}%`;
+    const dashXpLabel = $('#dashXpLabel');
+    if (dashXpLabel) dashXpLabel.textContent = level >= 100 ? 'Max Level!' : `Level ${level} · ${into}/${need} XP`;
+    const dashCoins = $('#dashCoins');
+    if (dashCoins) dashCoins.textContent = state.coins;
+    const dashStars = $('#dashStars');
+    if (dashStars) dashStars.textContent = state.totalStars;
+    const dashBadges = $('#dashBadges');
+    if (dashBadges) dashBadges.textContent = `${state.badges.length}/${BADGES.length}`;
+
+    const questPreview = $('#dashQuestPreview');
+    if (questPreview) {
+      questPreview.innerHTML = state.dailyQuests.quests.slice(0, 2).map(q => {
+        const p = Math.min(100, Math.round((q.progress / q.target) * 100));
+        return `<div class="dash-mini-quest"><span>${q.completed ? '✅' : '⏳'} ${q.desc}</span><div class="quest-progress-track"><div class="quest-progress-bar" style="width:${p}%"></div></div></div>`;
+      }).join('') || `<p class="dash-empty-note">Play a game to start today's quests!</p>`;
+    }
+
+    const badgePreview = $('#dashBadgePreview');
+    if (badgePreview) {
+      const recent = state.badges.slice(-4).reverse();
+      badgePreview.innerHTML = recent.length
+        ? recent.map(id => {
+            const b = BADGES.find(x => x.id === id);
+            return b ? `<span class="dash-badge-icon" title="${b.name}">${b.icon}</span>` : '';
+          }).join('')
+        : `<p class="dash-empty-note">Play games to unlock your first badge!</p>`;
+    }
+
+    const lbPreview = $('#dashLeaderboardPreview');
+    if (lbPreview) {
+      const gameIds = Object.keys(state.leaderboard).filter(id => state.leaderboard[id].length)
+        .sort((a, b) => state.leaderboard[b][0].score - state.leaderboard[a][0].score).slice(0, 3);
+      lbPreview.innerHTML = gameIds.length
+        ? gameIds.map(id => `<div class="dash-mini-score"><span>${GAME_TITLES[id] || id}</span><strong>${state.leaderboard[id][0].score} pts</strong></div>`).join('')
+        : `<p class="dash-empty-note">Play a game to set your first high score!</p>`;
+    }
   }
 
   /* ---------------- profile panel ---------------- */
@@ -679,14 +746,18 @@
   }
 
   /* ---------------- tabs ---------------- */
+  function switchToTab(tabName) {
+    const tab = $(`.profile-tab[data-tab="${tabName}"]`);
+    const panel = $(`.profile-tab-panel[data-panel="${tabName}"]`);
+    if (!tab || !panel) return;
+    $$('.profile-tab').forEach(t => t.classList.remove('is-active'));
+    $$('.profile-tab-panel').forEach(p => p.classList.remove('is-active'));
+    tab.classList.add('is-active');
+    panel.classList.add('is-active');
+  }
   function bindTabs() {
     $$('.profile-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        $$('.profile-tab').forEach(t => t.classList.remove('is-active'));
-        $$('.profile-tab-panel').forEach(p => p.classList.remove('is-active'));
-        tab.classList.add('is-active');
-        $(`.profile-tab-panel[data-panel="${tab.dataset.tab}"]`).classList.add('is-active');
-      });
+      tab.addEventListener('click', () => switchToTab(tab.dataset.tab));
     });
   }
 
@@ -705,6 +776,16 @@
     });
     $('#profileOverlay')?.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeProfilePanel();
+    });
+
+    // Homepage widgets (hero daily card + rewards dashboard) reuse the same profile panel/tabs — no separate logic.
+    $('#heroRewardsBtn')?.addEventListener('click', () => { openProfilePanel(); switchToTab('overview'); });
+    $('#heroDailyCard')?.addEventListener('click', () => { openProfilePanel(); switchToTab('overview'); });
+    $$('[data-open-profile]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        openProfilePanel();
+        if (btn.dataset.tabTarget) switchToTab(btn.dataset.tabTarget);
+      });
     });
 
     if (!state.dailyLogin.claimedToday) {
