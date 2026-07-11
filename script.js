@@ -37,6 +37,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btt) btt.classList.toggle('is-visible', window.scrollY > 600);
   });
 
+  /* ---------- ACTIVE SECTION NAV HIGHLIGHT ---------- */
+  const navLinkMap = new Map();
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const section = document.getElementById(id);
+    if (section) navLinkMap.set(section, link);
+  });
+  if (navLinkMap.size && 'IntersectionObserver' in window) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const link = navLinkMap.get(entry.target);
+        if (!link) return;
+        if (entry.isIntersecting) {
+          document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('is-active-link'));
+          link.classList.add('is-active-link');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    navLinkMap.forEach((_, section) => sectionObserver.observe(section));
+  }
+
   /* ---------- SEARCH TOGGLE ---------- */
   const searchToggle = document.getElementById('searchToggle');
   const searchBar = document.getElementById('searchBar');
