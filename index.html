@@ -121,6 +121,11 @@
 
   <!-- ================= HERO ================= -->
   <section class="hero">
+    <svg class="hero-skyline" viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,300 L0,180 L120,140 L180,180 L180,120 L260,80 L340,120 L340,180 L420,150 L420,300Z" fill="#C7B3F0" opacity=".35"/>
+      <path d="M900,300 L900,160 Q960,90 1000,160 L1000,110 Q1030,80 1060,110 L1060,160 Q1100,90 1140,160 L1140,300Z" fill="#F3C6DE" opacity=".4"/>
+      <path d="M1180,300 L1180,150 L1215,150 L1215,120 L1235,120 L1235,150 L1270,150 L1270,110 L1300,80 L1330,110 L1330,150 L1365,150 L1365,120 L1385,120 L1385,150 L1420,150 L1420,300Z" fill="#B79CE8" opacity=".38"/>
+    </svg>
     <div class="hero-floaters" aria-hidden="true">
       <div class="hf hf--star1">★</div>
       <div class="hf hf--star2">✦</div>
@@ -179,8 +184,8 @@
               <ellipse cx="100" cy="120" rx="55" ry="60" fill="#FACC15"/>
               <circle cx="78" cy="105" r="20" fill="#fff"/>
               <circle cx="122" cy="105" r="20" fill="#fff"/>
-              <circle cx="78" cy="105" r="8" fill="#1E1B2E"/>
-              <circle cx="122" cy="105" r="8" fill="#1E1B2E"/>
+              <circle class="owl-pupil" cx="78" cy="105" r="8" fill="#1E1B2E"/>
+              <circle class="owl-pupil" cx="122" cy="105" r="8" fill="#1E1B2E"/>
               <path d="M92 128 L100 140 L108 128 Z" fill="#EC4899"/>
             </svg>
           </div>
@@ -252,6 +257,13 @@
         <h3>📈 Your Top Scores</h3>
         <div class="dash-leaderboard-preview" id="dashLeaderboardPreview"></div>
         <button class="dash-link-btn" data-open-profile data-tab-target="scores">See full leaderboard →</button>
+      </div>
+
+      <div class="dash-card dash-card--adventure reveal-up">
+        <span class="adventure-soon-ribbon">Coming Soon</span>
+        <h3>🗺️ Adventure World</h3>
+        <p class="dash-adventure-copy">A story-driven world map is on the way — explore islands, meet characters, and unlock new lands as you level up.</p>
+        <div class="dash-adventure-preview" aria-hidden="true">🏝️ ➡️ 🏔️ ➡️ 🏰</div>
       </div>
     </div>
   </section>
@@ -652,6 +664,11 @@
 
 <!-- ================= FOOTER ================= -->
 <footer id="about" class="footer">
+  <div class="footer-deco" aria-hidden="true">
+    <span class="footer-star footer-star--1">✦</span>
+    <span class="footer-star footer-star--2">✧</span>
+    <span class="footer-star footer-star--3">⭐</span>
+  </div>
   <div class="footer-top">
     <div class="footer-brand">
       <a href="#home" class="brand">
