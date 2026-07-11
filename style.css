@@ -181,7 +181,7 @@ button{font-family:inherit; cursor:pointer; border:none; background:none;}
   box-shadow:0 10px 24px -8px rgba(124,58,237,.55);
   transition:transform .25s ease, box-shadow .25s ease;
 }
-.cta-btn:hover{ transform:translateY(-3px) scale(1.03); box-shadow:0 16px 30px -8px rgba(124,58,237,.6); }
+.cta-btn:hover{ transform:translateY(-3px) scale(1.03); box-shadow:0 16px 30px -8px rgba(124,58,237,.6), 0 0 0 4px rgba(124,58,237,.08); }
 .cta-btn--nav{ padding:10px 20px; }
 .cta-btn--primary{ background:linear-gradient(90deg,var(--violet),var(--pink)); }
 .cta-btn--ghost{
@@ -688,6 +688,9 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .ground-sparkle--1{ top:6%; left:8%; }
 .ground-sparkle--2{ bottom:14%; right:4%; animation-delay:1s; }
 .ground-butterfly{ position:absolute; top:40%; left:-4%; font-size:18px; animation:flutter 6s ease-in-out infinite 1.5s; }
+.ground-mushroom{ position:absolute; bottom:-2px; left:26%; font-size:16px; animation:floatY 4.4s ease-in-out infinite .3s; }
+.ground-grass{ position:absolute; bottom:-8px; right:8%; font-size:20px; animation:leafSway 5s ease-in-out infinite; }
+.ground-critter{ position:absolute; bottom:2px; right:-6%; font-size:20px; animation:floatY 5.2s ease-in-out infinite .9s; }
 
 /* ---------- premium CTA buttons (CSS-only: scale, glow, shine — no new JS) ---------- */
 .cta-btn{ position:relative; overflow:hidden; }
@@ -696,7 +699,6 @@ a:focus-visible, button:focus-visible, input:focus-visible{
   transform:translateX(-130%); transition:transform .55s ease;
 }
 .cta-btn:hover::before{ transform:translateX(130%); }
-.cta-btn:hover{ box-shadow:0 18px 32px -10px rgba(124,58,237,.55), 0 0 0 4px rgba(124,58,237,.08); }
 .cta-btn--ghost:hover{ box-shadow:0 14px 26px -10px rgba(124,58,237,.25), 0 0 0 4px rgba(124,58,237,.06); }
 
 /* ---------- dashboard gradient border + icon glow ---------- */
@@ -771,7 +773,36 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .icon-btn{ transition:transform .2s ease, background .2s ease, box-shadow .2s ease; }
 .icon-btn:hover{ box-shadow:0 6px 16px -6px rgba(124,58,237,.35); }
 
+/* =========================================================
+   Homepage game-card thumbnail illustrations (Part 5 of the
+   latest polish request). Backgrounds/colors unchanged —
+   only adds a small illustrated scene on top of each gradient.
+   ========================================================= */
+.thumb-scene{ position:absolute; inset:0; overflow:hidden; }
+.thumb-main-icon{ font-size:44px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.3)); animation:thumbBob 3s ease-in-out infinite; position:relative; z-index:1; }
+.thumb-deco{ position:absolute; filter:drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+.thumb-deco--a{ top:12%; left:10%; font-size:20px; animation:thumbFloat 3.4s ease-in-out infinite; }
+.thumb-deco--b{ bottom:16%; left:14%; font-size:15px; animation:thumbFloat 4s ease-in-out infinite .5s; }
+.thumb-deco--c{ top:16%; right:12%; font-size:17px; animation:thumbSpin 6s linear infinite; }
+.thumb-deco--d{ bottom:14%; right:14%; font-size:15px; animation:thumbFloat 3.8s ease-in-out infinite 1s; }
+@keyframes thumbFloat{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
+@keyframes thumbSpin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+@keyframes thumbBob{ 0%,100%{ transform:translateY(0) scale(1);} 50%{ transform:translateY(-4px) scale(1.05);} }
+
+.thumb-mascot{
+  position:absolute; bottom:8px; left:8px; width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.92);
+  display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 2px 6px rgba(0,0,0,.25); z-index:2;
+}
+.thumb-sparkle{ position:absolute; top:10%; right:32%; font-size:11px; color:#fff; opacity:.85; animation:decoTwinkle 2.2s ease-in-out infinite; }
+
+/* animated dashed ring appears only on hover, doesn't disturb the static frame already on .game-thumb::after */
+.game-card:hover .game-thumb::before{
+  content:''; position:absolute; inset:3px; border-radius:14px; border:2px dashed rgba(255,255,255,.65);
+  animation:thumbSpin 5s linear infinite; pointer-events:none;
+}
+
 /* ---------- reduced-motion respect for decorative elements ---------- */
 @media (prefers-reduced-motion: reduce){
-  .hf, .footer-star, .ground-bush, .ground-flower, .ground-sparkle, .ground-butterfly, .section-divider-cloud{ animation:none !important; opacity:.7 !important; }
+  .hf, .footer-star, .ground-bush, .ground-flower, .ground-sparkle, .ground-butterfly, .ground-mushroom, .ground-grass, .ground-critter, .section-divider-cloud,
+  .thumb-main-icon, .thumb-deco, .thumb-sparkle{ animation:none !important; opacity:.85 !important; }
 }
