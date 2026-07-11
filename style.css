@@ -717,3 +717,61 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .badge--age{ box-shadow:0 4px 10px -4px rgba(0,0,0,.3); }
 .game-card:hover .badge--diff{ animation:pulseBadge 1s ease-in-out infinite; }
 @keyframes pulseBadge{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.08);} }
+
+/* =========================================================
+   Homepage UX polish pass 3 — section transitions, active nav,
+   empty states, spacing, ambient depth, entrance fade.
+   Additive only — no gameplay/profile/arcade/sound JS touched.
+   ========================================================= */
+
+/* ---------- section divider (between adjacent same-tone sections) ---------- */
+.section-divider{
+  display:flex; align-items:center; justify-content:center; gap:14px; padding:8px 0; position:relative; z-index:1;
+}
+.section-divider-cloud{ font-size:20px; opacity:.6; animation:floatY 5s ease-in-out infinite; }
+.section-divider-dot{ width:7px; height:7px; border-radius:50%; background:var(--violet); opacity:.25; }
+.section-divider-dot:nth-child(3){ background:var(--pink); }
+.section-divider-dot:nth-child(4){ background:var(--yellow); }
+
+/* ---------- active nav link indicator (JS adds .is-active-link on scroll) ---------- */
+.nav-links a.is-active-link{ color:var(--violet); }
+[data-theme="dark"] .nav-links a.is-active-link{ color:#C9B6FF; }
+.nav-links a.is-active-link::after{ width:100%; }
+
+/* ---------- polished empty states (styling only — copy comes from profile.js) ---------- */
+.dash-empty-note{
+  display:flex; align-items:center; gap:8px; background:rgba(124,58,237,.05); border:1.5px dashed rgba(124,58,237,.25);
+  border-radius:12px; padding:12px 14px;
+}
+.dash-empty-note::before{ content:'✨'; font-size:16px; flex-shrink:0; }
+[data-theme="dark"] .dash-empty-note{ background:rgba(201,182,255,.06); border-color:rgba(201,182,255,.25); }
+.leaderboard-empty::before{ content:'🏁 '; }
+.g-empty-msg::before{ content:'🔍 '; }
+
+/* ---------- ambient depth glows behind key sections ---------- */
+.categories-section, .games-section, .challenge-section{ position:relative; }
+.categories-section::before, .games-section::before{
+  content:''; position:absolute; top:10%; left:50%; transform:translateX(-50%); width:60%; height:200px;
+  background:radial-gradient(ellipse, rgba(124,58,237,.06), transparent 70%); pointer-events:none; z-index:0;
+}
+.categories-section > *, .games-section > *{ position:relative; z-index:1; }
+
+/* ---------- spacing & typography refinement ---------- */
+.section-head{ margin-bottom:64px; }
+.section-title{ line-height:1.2; margin-bottom:16px; }
+.section-sub{ line-height:1.65; }
+.game-body{ padding:22px 20px; }
+.game-body p{ line-height:1.55; }
+.dash-card{ padding:26px; }
+.cta-btn{ letter-spacing:.01em; }
+@media (max-width:768px){ .section-head{ margin-bottom:44px; } }
+
+/* ---------- utility icon consistency (search/theme/hamburger) ---------- */
+.icon-btn svg{ display:block; }
+.icon-btn{ transition:transform .2s ease, background .2s ease, box-shadow .2s ease; }
+.icon-btn:hover{ box-shadow:0 6px 16px -6px rgba(124,58,237,.35); }
+
+/* ---------- reduced-motion respect for decorative elements ---------- */
+@media (prefers-reduced-motion: reduce){
+  .hf, .footer-star, .ground-bush, .ground-flower, .ground-sparkle, .ground-butterfly, .section-divider-cloud{ animation:none !important; opacity:.7 !important; }
+}
