@@ -162,6 +162,10 @@
       <div class="hf hf--bubble2"></div>
       <div class="hf hf--bubble3"></div>
       <div class="hf hf--shooting-star"></div>
+      <div class="hf hf--pencil">✏️</div>
+      <div class="hf hf--kite">🪁</div>
+      <div class="hf hf--flag">🚩</div>
+      <div class="hf hf--toy">🧸</div>
     </div>
 
 
@@ -196,6 +200,8 @@
           <span class="ground-mushroom">🍄</span>
           <span class="ground-grass">🌾</span>
           <span class="ground-critter" title="Curious Squirrel">🐿️</span>
+          <span class="ground-friend ground-friend--bear" title="Friendly Bear">🐻</span>
+          <span class="ground-friend ground-friend--panda" title="Playful Panda">🐼</span>
         </div>
         <div class="hero-card glass-panel">
           <!-- INSERT CARTOON CHILD IMAGE HERE -->
@@ -212,12 +218,13 @@
           </svg>
           <div class="hero-owl-buddy">
             <svg viewBox="0 0 200 200" width="86" aria-hidden="true">
-              <ellipse cx="100" cy="120" rx="55" ry="60" fill="#FACC15"/>
+              <ellipse class="owl-body" cx="100" cy="120" rx="55" ry="60" fill="#FACC15"/>
               <circle cx="78" cy="105" r="20" fill="#fff"/>
               <circle cx="122" cy="105" r="20" fill="#fff"/>
               <circle class="owl-pupil" cx="78" cy="105" r="8" fill="#1E1B2E"/>
               <circle class="owl-pupil" cx="122" cy="105" r="8" fill="#1E1B2E"/>
               <path d="M92 128 L100 140 L108 128 Z" fill="#EC4899"/>
+              <path class="owl-wing" d="M148 115 Q172 108 168 130 Q160 122 148 128Z" fill="#F5B70D"/>
             </svg>
           </div>
         </div>
@@ -395,7 +402,7 @@
 
     <div class="games-grid">
       <!-- Multiplayer game card template x8 — each opens the in-browser Arcade -->
-      <button class="game-card reveal-up" data-open-arcade data-game="colorBattle">
+      <button class="game-card reveal-up cat-brain" data-open-arcade data-game="colorBattle">
         <div class="game-thumb" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">🔴</span>
@@ -416,7 +423,8 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="mathBattle">
+      <button class="game-card reveal-up cat-math is-featured" data-open-arcade data-game="mathBattle">
+        <span class="featured-ribbon">⭐ Best for Kids</span>
         <div class="game-thumb" style="background:linear-gradient(135deg,#06B6D4,#7C3AED)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">7</span>
@@ -437,7 +445,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="memoryBattle">
+      <button class="game-card reveal-up cat-memory" data-open-arcade data-game="memoryBattle">
         <div class="game-thumb" style="background:linear-gradient(135deg,#10B981,#06B6D4)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">🃏</span>
@@ -457,7 +465,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="treasureHunt">
+      <button class="game-card reveal-up cat-logic" data-open-arcade data-game="treasureHunt">
         <div class="game-thumb" style="background:linear-gradient(135deg,#EC4899,#FACC15)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">💰</span>
@@ -477,7 +485,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="animalSound">
+      <button class="game-card reveal-up cat-educational" data-open-arcade data-game="animalSound">
         <div class="game-thumb" style="background:linear-gradient(135deg,#7C3AED,#06B6D4)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">🐮</span>
@@ -497,7 +505,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="wordBuilder">
+      <button class="game-card reveal-up cat-english" data-open-arcade data-game="wordBuilder">
         <div class="game-thumb" style="background:linear-gradient(135deg,#FACC15,#EC4899)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">A</span>
@@ -517,7 +525,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="reactionSpeed">
+      <button class="game-card reveal-up cat-multiplayer" data-open-arcade data-game="reactionSpeed">
         <div class="game-thumb" style="background:linear-gradient(135deg,#10B981,#7C3AED)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">⏱️</span>
@@ -537,7 +545,7 @@
         </div>
       </button>
 
-      <button class="game-card reveal-up" data-open-arcade data-game="puzzleRace">
+      <button class="game-card reveal-up cat-puzzle" data-open-arcade data-game="puzzleRace">
         <div class="game-thumb" style="background:linear-gradient(135deg,#06B6D4,#EC4899)">
           <div class="thumb-scene">
             <span class="thumb-deco thumb-deco--a">🧩</span>
@@ -760,10 +768,12 @@
 
 <!-- ================= FOOTER ================= -->
 <footer id="about" class="footer">
+  <svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,32 C240,60 480,0 720,20 C960,40 1200,58 1440,28 L1440,60 L0,60 Z"></path></svg>
   <div class="footer-deco" aria-hidden="true">
     <span class="footer-star footer-star--1">✦</span>
     <span class="footer-star footer-star--2">✧</span>
     <span class="footer-star footer-star--3">⭐</span>
+    <span class="footer-cloud">☁️</span>
   </div>
   <div class="footer-top">
     <div class="footer-brand">
@@ -810,6 +820,12 @@
       <a href="#cookies">Cookie Policy</a>
     </div>
   </div>
+
+  <div class="footer-goodbye">
+    <span class="footer-mascot" aria-hidden="true">🦉</span>
+    <p>See you soon, explorer! Come back tomorrow for a fresh Daily Reward. 🌟</p>
+  </div>
+  <div class="footer-grass" aria-hidden="true"></div>
 
   <div class="footer-bottom">
     <p>© <span id="year"></span> Bouncy Learning. All rights reserved. Made with 💜 for curious minds.</p>
