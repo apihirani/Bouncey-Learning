@@ -166,6 +166,8 @@
       <div class="hf hf--kite">🪁</div>
       <div class="hf hf--flag">🚩</div>
       <div class="hf hf--toy">🧸</div>
+      <div class="hf hf--blocks">🧱</div>
+      <div class="hf hf--candy">🍬</div>
     </div>
 
 
@@ -583,37 +585,86 @@
       <p class="section-sub">Explore magical learning lands and unlock new challenges.</p>
     </div>
 
-    <div class="adventure-world-grid">
-      <div class="world-card reveal-up">
-        <span class="world-level">Level 1</span>
-        <div class="world-icon">🌳</div>
+    <div class="adventure-timeline">
+      <div class="world-node is-unlocked is-current reveal-up">
+        <div class="world-node-icon">🏡</div>
+        <h3>Home Village</h3>
+        <div class="world-node-meta"><span>🟢 Start Here</span></div>
+        <span class="world-status-badge world-status-badge--current">📍 You Are Here</span>
+      </div>
+
+      <span class="world-connector" aria-hidden="true">➜</span>
+
+      <div class="world-node is-locked reveal-up">
+        <div class="world-lock-overlay" aria-hidden="true">🔒</div>
+        <div class="world-node-icon">🌳</div>
         <h3>Alphabet Forest</h3>
-        <p>Letters, words, spelling</p>
+        <div class="world-node-meta"><span>🟢 Easy</span><span>👶 5–8</span><span>⏱️ 15 min</span></div>
+        <div class="world-reward-icons" aria-hidden="true"><span>✨</span><span>🪙</span><span>⭐</span></div>
+        <span class="world-status-badge world-status-badge--locked">🔒 Locked</span>
       </div>
-      <div class="world-card reveal-up">
-        <span class="world-level">Level 2</span>
-        <div class="world-icon">🏝️</div>
+
+      <span class="world-connector" aria-hidden="true">➜</span>
+
+      <div class="world-node is-locked reveal-up">
+        <div class="world-lock-overlay" aria-hidden="true">🔒</div>
+        <div class="world-node-icon">🏝️</div>
         <h3>Math Island</h3>
-        <p>Counting, addition, multiplication</p>
+        <div class="world-node-meta"><span>🟡 Medium</span><span>👶 7–10</span><span>⏱️ 20 min</span></div>
+        <div class="world-reward-icons" aria-hidden="true"><span>✨</span><span>🪙</span><span>⭐</span></div>
+        <span class="world-status-badge world-status-badge--locked">🔒 Locked</span>
       </div>
-      <div class="world-card reveal-up">
-        <span class="world-level">Level 3</span>
-        <div class="world-icon">🧩</div>
+
+      <span class="world-connector" aria-hidden="true">➜</span>
+
+      <div class="world-node is-locked reveal-up">
+        <div class="world-lock-overlay" aria-hidden="true">🔒</div>
+        <div class="world-node-icon">🧩</div>
         <h3>Puzzle Valley</h3>
-        <p>Logic, memory, patterns</p>
+        <div class="world-node-meta"><span>🟡 Medium</span><span>👶 7–11</span><span>⏱️ 20 min</span></div>
+        <div class="world-reward-icons" aria-hidden="true"><span>✨</span><span>🪙</span><span>⭐</span></div>
+        <span class="world-status-badge world-status-badge--locked">🔒 Locked</span>
       </div>
-      <div class="world-card reveal-up">
-        <span class="world-level">Level 4</span>
-        <div class="world-icon">🚀</div>
+
+      <span class="world-connector" aria-hidden="true">➜</span>
+
+      <div class="world-node is-locked reveal-up">
+        <div class="world-lock-overlay" aria-hidden="true">🔒</div>
+        <div class="world-node-icon">🚀</div>
         <h3>Space Galaxy</h3>
-        <p>Science, planets, discovery</p>
+        <div class="world-node-meta"><span>🔴 Hard</span><span>👶 8–12</span><span>⏱️ 25 min</span></div>
+        <div class="world-reward-icons" aria-hidden="true"><span>✨</span><span>🪙</span><span>⭐</span></div>
+        <span class="world-status-badge world-status-badge--locked">🔒 Locked</span>
       </div>
+
+      <span class="world-connector" aria-hidden="true">➜</span>
+
+      <div class="world-node is-locked is-final reveal-up">
+        <div class="world-lock-overlay" aria-hidden="true">🔒</div>
+        <div class="world-node-icon">🏆</div>
+        <h3>Champion Castle</h3>
+        <div class="world-node-meta"><span>🔴 Hard</span><span>👑 Final Challenge</span></div>
+        <span class="world-status-badge world-status-badge--locked">🔒 Locked</span>
+      </div>
+    </div>
+
+    <div class="adventure-empty-state reveal-up">
+      <span class="adventure-empty-mascot" aria-hidden="true">🦉</span>
+      <p>Play games to unlock your next adventure.</p>
     </div>
 
     <div class="adventure-progress-strip reveal-up">
       <span class="adv-progress-label">Adventure Progress</span>
-      <div class="adv-progress-track"><div class="adv-progress-bar"></div></div>
-      <span class="adv-progress-count">1 / 4 Worlds Unlocked</span>
+      <div class="adv-milestone-track">
+        <div class="adv-milestone-fill"></div>
+        <span class="adv-milestone-dot is-reached" title="Home Village"></span>
+        <span class="adv-milestone-dot" title="Alphabet Forest"></span>
+        <span class="adv-milestone-dot" title="Math Island"></span>
+        <span class="adv-milestone-dot" title="Puzzle Valley"></span>
+        <span class="adv-milestone-dot" title="Space Galaxy"></span>
+        <span class="adv-milestone-dot" title="Champion Castle"></span>
+      </div>
+      <span class="adv-progress-count">1 / 6 Worlds Unlocked · 17%</span>
     </div>
 
     <div class="adventure-cta-wrap reveal-up">
