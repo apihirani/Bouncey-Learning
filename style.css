@@ -914,3 +914,66 @@ a:focus-visible, button:focus-visible, input:focus-visible{
   .game-card.is-featured{ animation:none; }
   .game-card:hover .play-btn{ animation:none; }
 }
+
+/* =========================================================
+   Adventure World teaser section (Coming Soon — no world map
+   built yet; this is purely a preview/marketing section).
+   ========================================================= */
+
+.adventure-section{
+  position:relative; overflow:hidden; border-radius:48px;
+  background:linear-gradient(160deg,#2A2050 0%, #3A2050 55%, #4C1D95 100%);
+}
+.adventure-section .section-title, .adventure-section .section-sub{ color:#fff; }
+.adventure-section .section-sub{ color:rgba(255,255,255,.75); }
+.adventure-section .eyebrow{ background:rgba(255,255,255,.12); color:#fff; }
+
+.adventure-deco{ position:absolute; inset:0; pointer-events:none; }
+.adv-star{ position:absolute; color:rgba(255,255,255,.35); animation:decoTwinkle 3s ease-in-out infinite; }
+.adv-star--1{ top:10%; left:8%; font-size:22px; }
+.adv-star--2{ bottom:16%; right:12%; font-size:16px; animation-delay:1s; }
+.adv-cloud{ position:absolute; top:16%; right:20%; font-size:30px; opacity:.2; animation:decoDriftX 14s ease-in-out infinite; }
+
+.adventure-world-grid{
+  position:relative; z-index:1; display:grid; grid-template-columns:repeat(4,1fr); gap:22px; margin-bottom:40px;
+}
+@media (max-width:900px){ .adventure-world-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .adventure-world-grid{ grid-template-columns:1fr; } }
+
+.world-card{
+  position:relative; text-align:center; padding:28px 18px; border-radius:22px;
+  background:rgba(255,255,255,.08); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.14); box-shadow:0 20px 40px -20px rgba(0,0,0,.5);
+  transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+}
+.world-card:hover{ transform:translateY(-8px); background:rgba(255,255,255,.13); box-shadow:0 28px 50px -18px rgba(0,0,0,.55); }
+.world-level{
+  display:inline-block; font-family:var(--font-data); font-weight:700; font-size:10.5px; color:#FDE68A;
+  background:rgba(250,204,21,.15); padding:3px 10px; border-radius:999px; margin-bottom:12px;
+}
+.world-icon{ font-size:40px; margin-bottom:10px; filter:drop-shadow(0 8px 14px rgba(0,0,0,.4)); }
+.world-card h3{ font-family:var(--font-display); font-size:15.5px; color:#fff; margin-bottom:6px; }
+.world-card p{ font-size:12px; color:rgba(255,255,255,.65); }
+
+.adventure-progress-strip{
+  position:relative; z-index:1; display:flex; align-items:center; gap:16px; justify-content:center; flex-wrap:wrap;
+  max-width:480px; margin:0 auto 36px; background:rgba(255,255,255,.08); border-radius:999px; padding:12px 22px;
+}
+.adv-progress-label{ font-family:var(--font-data); font-weight:700; font-size:12px; color:#fff; }
+.adv-progress-track{ flex:1; min-width:100px; height:8px; background:rgba(255,255,255,.15); border-radius:99px; overflow:hidden; }
+.adv-progress-bar{ height:100%; width:25%; background:linear-gradient(90deg,var(--yellow),var(--pink)); border-radius:99px; }
+.adv-progress-count{ font-family:var(--font-data); font-weight:700; font-size:12px; color:#FDE68A; white-space:nowrap; }
+
+.adventure-cta-wrap{ position:relative; z-index:1; text-align:center; }
+.adventure-cta-btn{
+  font-size:16px; padding:16px 36px; background:linear-gradient(90deg,var(--yellow),#FDE047); color:var(--ink);
+  box-shadow:0 16px 34px -10px rgba(250,204,21,.55); animation:adventureCtaGlow 2.4s ease-in-out infinite;
+}
+.adventure-cta-btn:hover{ transform:translateY(-3px) scale(1.04); }
+@keyframes adventureCtaGlow{
+  0%,100%{ box-shadow:0 16px 34px -10px rgba(250,204,21,.5); }
+  50%{ box-shadow:0 20px 42px -8px rgba(250,204,21,.75); }
+}
+@media (prefers-reduced-motion: reduce){
+  .adv-star, .adv-cloud, .adventure-cta-btn{ animation:none; }
+}
