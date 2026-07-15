@@ -80,6 +80,21 @@
     { id: 'level_25', icon: '🦸', name: 'Knowledge Hero', desc: 'Reach Level 25', check: s => levelFromXp(s.xp) >= 25 }
   ];
 
+  /* ---------------- Adventure World data model ----------------
+     Mirrors the 6-node timeline already built in index.html/style.css
+     (Home Village is the starting point, not a completable world).
+     Each world completes after `gamesRequired` games from its
+     matching categories — reusing the same category field arcade.js
+     already sends with every recordGameResult call. */
+  const ADVENTURE_WORLDS = [
+    { id: 'alphabetForest', name: 'Alphabet Forest', categories: ['English'], gamesRequired: 5, crystal: '🟣' },
+    { id: 'mathIsland', name: 'Math Island', categories: ['Math'], gamesRequired: 5, crystal: '🔵' },
+    { id: 'puzzleValley', name: 'Puzzle Valley', categories: ['Brain', 'Puzzle', 'Memory'], gamesRequired: 5, crystal: '🟢' },
+    { id: 'spaceGalaxy', name: 'Space Galaxy', categories: ['Knowledge'], gamesRequired: 5, crystal: '🟡' },
+    { id: 'championCastle', name: 'Champion Castle', categories: ['Multiplayer'], gamesRequired: 3, crystal: '🟠' }
+  ];
+  const ADVENTURE_BONUS_CRYSTAL = '❤️'; // awarded once every world above is completed
+
   /* ---------------- daily quest templates ---------------- */
   const QUEST_TEMPLATES = [
     { id: 'play_n', desc: n => `Play ${n} games`, target: 3, key: 'gamesToday', rewardXp: 20, rewardCoins: 10 },
@@ -207,7 +222,11 @@
       dailyQuests: { date: null, quests: [] },
       dailyQuestDaysCompleted: 0,
       weeklyMissions: { weekKey: null, missions: [] },
-      monthlyChallenges: { monthKey: null, challenges: [] }
+      monthlyChallenges: { monthKey: null, challenges: [] },
+      adventureProgress: {
+        currentWorld: 'alphabetForest', completedWorlds: [], completedMissions: [],
+        collectedCrystals: [], worldStars: {}, worldGameCounts: {}
+      }
     };
   }
 
@@ -224,6 +243,12 @@
       merged.dailyQuests = Object.assign({ date: null, quests: [] }, parsed.dailyQuests);
       merged.weeklyMissions = Object.assign({ weekKey: null, missions: [] }, parsed.weeklyMissions);
       merged.monthlyChallenges = Object.assign({ monthKey: null, challenges: [] }, parsed.monthlyChallenges);
+      merged.adventureProgress = Object.assign({
+        currentWorld: 'alphabetForest', completedWorlds: [], completedMissions: [],
+        collectedCrystals: [], worldStars: {}, worldGameCounts: {}
+      }, parsed.adventureProgress);
+      merged.adventureProgress.worldStars = Object.assign({}, parsed.adventureProgress?.worldStars);
+      merged.adventureProgress.worldGameCounts = Object.assign({}, parsed.adventureProgress?.worldGameCounts);
       return merged;
     } catch (e) { return defaultState(); }
   }
@@ -323,6 +348,45 @@
       if (c.progress >= c.target) c.completed = true;
     });
   }
+
+  /* ---------------- Adventure World progression ----------------
+     Fully automatic — no buttons, no manual unlock action anywhere.
+     A world "completes" once enough games from its matching
+     categories have been played, which auto-unlocks the next world
+     in the ADVENTURE_WORLDS sequence and awards that world's crystal. */
+  function updateAdventureProgress(payload, rewards) {
+    const ap = state.adventureProgress;
+    if (!ap.currentWorld || !payload.category) return; // adventure already finished, or this game has no category
+
+    const world = ADVENTURE_WORLDS.find(w => w.id === ap.currentWorld);
+    if (!world || !world.categories.includes(payload.category)) return; // this game doesn't count toward the active world
+
+    ap.worldGameCounts[world.id] = (ap.worldGameCounts[world.id] || 0) + 1;
+    ap.worldStars[world.id] = (ap.worldStars[world.id] || 0) + (rewards.stars || 0);
+
+    if (ap.worldGameCounts[world.id] >= world.gamesRequired) {
+      ap.completedWorlds.push(world.id);
+      ap.completedMissions.push(world.id); // one mission per world for now — see note below
+      ap.collectedCrystals.push(world.crystal);
+
+      const nextWorld = ADVENTURE_WORLDS[ADVENTURE_WORLDS.indexOf(world) + 1];
+      if (nextWorld) {
+        ap.currentWorld = nextWorld.id;
+      } else {
+        // Champion Castle was the last world — award the bonus crystal and close out the adventure.
+        if (!ap.collectedCrystals.includes(ADVENTURE_BONUS_CRYSTAL)) ap.collectedCrystals.push(ADVENTURE_BONUS_CRYSTAL);
+        ap.currentWorld = null;
+      }
+
+      toast(`<span class="bl-toast-icon">${world.crystal}</span> ${world.name} complete! Crystal collected.`, 3000);
+      if (window.BouncySound) window.BouncySound.play('levelup');
+      if (typeof window.fireConfetti === 'function') window.fireConfetti(100);
+    }
+  }
+  // Note: this is the data foundation only, per this task's scope — each world currently
+  // maps to exactly one mission (completing the world = completing its mission). Splitting
+  // a world into multiple sequential sub-missions is straightforward to add later on top of
+  // this same structure (completedMissions is already an array, not a single value).
 
   function claimMonthlyChallenge(id) {
     const c = state.monthlyChallenges.challenges.find(x => x.id === id);
@@ -452,6 +516,7 @@
     updateQuestProgress(payload, rewards.stars);
     updateWeeklyProgress(payload, rewards);
     updateMonthlyProgress(payload);
+    updateAdventureProgress(payload, rewards);
 
     const newlyUnlocked = [];
     BADGES.forEach(b => {
@@ -619,6 +684,7 @@
     renderMonthlyList();
     renderLeaderboardList();
     renderDailyButton();
+    renderAdventureSummary();
   }
 
   function renderStatsGrid() {
@@ -635,6 +701,33 @@
       <div class="stat-card"><strong>${state.perfectGames}</strong><span>Perfect Games</span></div>
       <div class="stat-card"><strong>${state.badges.length}/${BADGES.length}</strong><span>Achievements</span></div>
     `;
+  }
+
+  function renderAdventureSummary() {
+    const el = $('#adventureSummaryCard');
+    if (!el) return;
+    const ap = state.adventureProgress;
+    const world = ADVENTURE_WORLDS.find(w => w.id === ap.currentWorld);
+    const pct = Math.round((ap.completedWorlds.length / ADVENTURE_WORLDS.length) * 100);
+
+    $('#advCurrentWorld').textContent = world ? world.name : '🏆 Adventure Complete!';
+    $('#advCurrentMission').textContent = world ? `Recover the ${world.name} Crystal` : 'All missions complete';
+    $('#advWorldsCompleted').textContent = `${ap.completedWorlds.length} / ${ADVENTURE_WORLDS.length}`;
+    $('#advCrystals').textContent = ap.collectedCrystals.length ? ap.collectedCrystals.join(' ') : '—';
+    $('#advSummaryProgressBar').style.width = `${pct}%`;
+    $('#advProgressPct').textContent = `${pct}% complete`;
+
+    if (world) {
+      const done = ap.worldGameCounts[world.id] || 0;
+      const remaining = Math.max(0, world.gamesRequired - done);
+      const nextWorld = ADVENTURE_WORLDS[ADVENTURE_WORLDS.indexOf(world) + 1];
+      const unlockLabel = nextWorld ? nextWorld.name : 'the final crystal';
+      $('#advNextUnlock').textContent = remaining > 0
+        ? `${remaining} more ${world.categories.join('/')} game${remaining === 1 ? '' : 's'} to unlock ${unlockLabel}`
+        : `Unlocking ${unlockLabel}…`;
+    } else {
+      $('#advNextUnlock').textContent = 'You\'ve collected every crystal!';
+    }
   }
 
   function renderQuestList() {
