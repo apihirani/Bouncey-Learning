@@ -166,3 +166,20 @@
 .challenge-card-pct{ font-family:var(--font-data); font-weight:700; font-size:11px; color:var(--violet); margin:4px 0 10px; }
 [data-theme="dark"] .challenge-card-pct{ color:#C9B6FF; }
 .challenge-card .quest-claim-btn{ width:100%; padding:8px; font-size:11px; }
+
+/* =========================================================
+   Adventure Progress summary (Overview tab) — data-integration
+   pass. Reuses .quest-progress-track's visual language via a
+   differently-named class (adv-progress-track) to avoid clashing
+   with the arcade-side .quest-progress-track selector scope.
+   ========================================================= */
+.adventure-summary-card{
+  background:var(--cream-2); border-radius:14px; padding:16px 18px; margin-bottom:24px; display:flex; flex-direction:column; gap:8px;
+}
+.adventure-summary-row{ display:flex; justify-content:space-between; align-items:center; font-size:12.5px; }
+.adventure-summary-row span{ color:var(--text-muted); }
+.adventure-summary-row strong{ color:var(--text); font-weight:700; text-align:right; }
+.adventure-summary-row--small{ font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+.adventure-summary-row--small strong{ font-weight:600; }
+.adv-progress-track{ width:100%; height:7px; background:rgba(124,58,237,.12); border-radius:99px; overflow:hidden; margin:6px 0 2px; }
+.adv-progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--violet),var(--pink)); border-radius:99px; transition:width .5s ease; }
