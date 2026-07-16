@@ -87,11 +87,11 @@
      matching categories — reusing the same category field arcade.js
      already sends with every recordGameResult call. */
   const ADVENTURE_WORLDS = [
-    { id: 'alphabetForest', name: 'Alphabet Forest', categories: ['English'], gamesRequired: 5, crystal: '🟣' },
-    { id: 'mathIsland', name: 'Math Island', categories: ['Math'], gamesRequired: 5, crystal: '🔵' },
-    { id: 'puzzleValley', name: 'Puzzle Valley', categories: ['Brain', 'Puzzle', 'Memory'], gamesRequired: 5, crystal: '🟢' },
-    { id: 'spaceGalaxy', name: 'Space Galaxy', categories: ['Knowledge'], gamesRequired: 5, crystal: '🟡' },
-    { id: 'championCastle', name: 'Champion Castle', categories: ['Multiplayer'], gamesRequired: 3, crystal: '🟠' }
+    { id: 'alphabetForest', name: 'Alphabet Forest', categories: ['English'], gamesRequired: 5, crystal: '🟣', missionTitle: 'Complete 5 English games' },
+    { id: 'mathIsland', name: 'Math Island', categories: ['Math'], gamesRequired: 6, crystal: '🔵', missionTitle: 'Complete 6 Math games' },
+    { id: 'puzzleValley', name: 'Puzzle Valley', categories: ['Brain', 'Puzzle', 'Memory'], gamesRequired: 6, crystal: '🟢', missionTitle: 'Complete 6 Brain/Puzzle games' },
+    { id: 'spaceGalaxy', name: 'Space Galaxy', categories: ['Knowledge'], gamesRequired: 8, crystal: '🟡', missionTitle: 'Complete 8 Science/Knowledge games' },
+    { id: 'championCastle', name: 'Champion Castle', isFinal: true, requiredStars: 15, crystal: '🟠', missionTitle: 'Complete every world and earn 15 total stars' }
   ];
   const ADVENTURE_BONUS_CRYSTAL = '❤️'; // awarded once every world above is completed
 
@@ -356,37 +356,60 @@
      in the ADVENTURE_WORLDS sequence and awards that world's crystal. */
   function updateAdventureProgress(payload, rewards) {
     const ap = state.adventureProgress;
-    if (!ap.currentWorld || !payload.category) return; // adventure already finished, or this game has no category
+    if (!ap.currentWorld) return; // adventure already finished
 
     const world = ADVENTURE_WORLDS.find(w => w.id === ap.currentWorld);
-    if (!world || !world.categories.includes(payload.category)) return; // this game doesn't count toward the active world
+    if (!world) return;
+
+    if (world.isFinal) {
+      // Champion Castle has no category gate. It can only ever become currentWorld after
+      // Alphabet Forest -> Math Island -> Puzzle Valley -> Space Galaxy have each completed
+      // in sequence (completeWorld only advances currentWorld to the next array entry), so
+      // "all previous worlds completed" is structurally guaranteed here, not just checked.
+      // Every completed game's stars count toward it; it completes once the total is reached.
+      ap.worldStars[world.id] = (ap.worldStars[world.id] || 0) + (rewards.stars || 0);
+      const totalStars = Object.values(ap.worldStars).reduce((sum, n) => sum + n, 0);
+      if (totalStars >= world.requiredStars) completeWorld(world);
+      return;
+    }
+
+    if (!payload.category || !world.categories.includes(payload.category)) return; // doesn't count toward the active world's mission
 
     ap.worldGameCounts[world.id] = (ap.worldGameCounts[world.id] || 0) + 1;
     ap.worldStars[world.id] = (ap.worldStars[world.id] || 0) + (rewards.stars || 0);
 
-    if (ap.worldGameCounts[world.id] >= world.gamesRequired) {
-      ap.completedWorlds.push(world.id);
-      ap.completedMissions.push(world.id); // one mission per world for now — see note below
-      ap.collectedCrystals.push(world.crystal);
-
-      const nextWorld = ADVENTURE_WORLDS[ADVENTURE_WORLDS.indexOf(world) + 1];
-      if (nextWorld) {
-        ap.currentWorld = nextWorld.id;
-      } else {
-        // Champion Castle was the last world — award the bonus crystal and close out the adventure.
-        if (!ap.collectedCrystals.includes(ADVENTURE_BONUS_CRYSTAL)) ap.collectedCrystals.push(ADVENTURE_BONUS_CRYSTAL);
-        ap.currentWorld = null;
-      }
-
-      toast(`<span class="bl-toast-icon">${world.crystal}</span> ${world.name} complete! Crystal collected.`, 3000);
-      if (window.BouncySound) window.BouncySound.play('levelup');
-      if (typeof window.fireConfetti === 'function') window.fireConfetti(100);
-    }
+    if (ap.worldGameCounts[world.id] >= world.gamesRequired) completeWorld(world);
   }
-  // Note: this is the data foundation only, per this task's scope — each world currently
-  // maps to exactly one mission (completing the world = completing its mission). Splitting
-  // a world into multiple sequential sub-missions is straightforward to add later on top of
-  // this same structure (completedMissions is already an array, not a single value).
+
+  function completeWorld(world) {
+    const ap = state.adventureProgress;
+    if (ap.completedWorlds.includes(world.id)) return; // duplicate-prevention guard — a world/crystal can only ever be awarded once
+
+    ap.completedWorlds.push(world.id);
+    ap.completedMissions.push(world.id);
+    ap.collectedCrystals.push(world.crystal);
+
+    const nextWorld = ADVENTURE_WORLDS[ADVENTURE_WORLDS.indexOf(world) + 1];
+    if (nextWorld) {
+      ap.currentWorld = nextWorld.id;
+    } else {
+      if (!ap.collectedCrystals.includes(ADVENTURE_BONUS_CRYSTAL)) ap.collectedCrystals.push(ADVENTURE_BONUS_CRYSTAL);
+      ap.currentWorld = null;
+    }
+
+    // Reuses the existing toast/confetti/sound system only — no new notification code.
+    // Staggered like the existing badge-unlock cascade elsewhere in this file.
+    toast(`<span class="bl-toast-icon">🎉</span> Mission Complete! ${world.name} finished.`, 2800);
+    setTimeout(() => toast(`<span class="bl-toast-icon">💎</span> Crystal Collected! ${world.crystal}`, 2800), 1300);
+    if (nextWorld) {
+      setTimeout(() => toast(`<span class="bl-toast-icon">🌍</span> New World Unlocked: ${nextWorld.name}!`, 3000), 2600);
+    } else {
+      setTimeout(() => toast(`<span class="bl-toast-icon">🏆</span> Adventure Complete! Every crystal collected.`, 3200), 2600);
+    }
+    if (window.BouncySound) window.BouncySound.play('levelup');
+    if (typeof window.fireConfetti === 'function') window.fireConfetti(100);
+  }
+
 
   function claimMonthlyChallenge(id) {
     const c = state.monthlyChallenges.challenges.find(x => x.id === id);
@@ -711,13 +734,19 @@
     const pct = Math.round((ap.completedWorlds.length / ADVENTURE_WORLDS.length) * 100);
 
     $('#advCurrentWorld').textContent = world ? world.name : '🏆 Adventure Complete!';
-    $('#advCurrentMission').textContent = world ? `Recover the ${world.name} Crystal` : 'All missions complete';
+    $('#advCurrentMission').textContent = world ? world.missionTitle : 'All missions complete';
     $('#advWorldsCompleted').textContent = `${ap.completedWorlds.length} / ${ADVENTURE_WORLDS.length}`;
     $('#advCrystals').textContent = ap.collectedCrystals.length ? ap.collectedCrystals.join(' ') : '—';
     $('#advSummaryProgressBar').style.width = `${pct}%`;
     $('#advProgressPct').textContent = `${pct}% complete`;
 
-    if (world) {
+    if (world && world.isFinal) {
+      const earned = Object.values(ap.worldStars).reduce((sum, n) => sum + n, 0);
+      const remaining = Math.max(0, world.requiredStars - earned);
+      $('#advNextUnlock').textContent = remaining > 0
+        ? `${remaining} more star${remaining === 1 ? '' : 's'} needed to complete your journey`
+        : 'Completing your journey…';
+    } else if (world) {
       const done = ap.worldGameCounts[world.id] || 0;
       const remaining = Math.max(0, world.gamesRequired - done);
       const nextWorld = ADVENTURE_WORLDS[ADVENTURE_WORLDS.indexOf(world) + 1];
