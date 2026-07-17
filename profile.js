@@ -368,8 +368,7 @@
       // "all previous worlds completed" is structurally guaranteed here, not just checked.
       // Every completed game's stars count toward it; it completes once the total is reached.
       ap.worldStars[world.id] = (ap.worldStars[world.id] || 0) + (rewards.stars || 0);
-      const totalStars = Object.values(ap.worldStars).reduce((sum, n) => sum + n, 0);
-      if (totalStars >= world.requiredStars) completeWorld(world);
+      if (ap.worldStars[world.id] >= world.requiredStars) completeWorld(world);
       return;
     }
 
@@ -741,7 +740,7 @@
     $('#advProgressPct').textContent = `${pct}% complete`;
 
     if (world && world.isFinal) {
-      const earned = Object.values(ap.worldStars).reduce((sum, n) => sum + n, 0);
+      const earned = ap.worldStars[world.id] || 0;
       const remaining = Math.max(0, world.requiredStars - earned);
       $('#advNextUnlock').textContent = remaining > 0
         ? `${remaining} more star${remaining === 1 ? '' : 's'} needed to complete your journey`
