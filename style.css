@@ -1198,3 +1198,50 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 @media (prefers-reduced-motion: reduce){
   .adv-firefly, .adv-leaf, .adv-sparkle, .crystal-gem.is-glowing{ animation:none; }
 }
+
+/* =========================================================
+   Learning Center — curriculum catalog (structure only).
+   Reuses .cat-card's shadow/radius/hover-lift language and the
+   site's existing pill-badge convention rather than a new system.
+   ========================================================= */
+
+.learn-center-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+@media (max-width:1100px){ .learn-center-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:560px){ .learn-center-grid{ grid-template-columns:1fr; } }
+
+.learn-card{
+  position:relative; background:var(--surface); border:1px solid rgba(30,27,46,.06); border-radius:var(--radius-md);
+  border-top:4px solid var(--tilt-accent,var(--violet)); padding:24px 22px; box-shadow:var(--shadow-card);
+  transition:transform .3s ease, box-shadow .3s ease; display:flex; flex-direction:column;
+}
+.learn-card:hover{ transform:translateY(-6px); box-shadow:0 26px 50px -18px rgba(30,27,46,.25); }
+
+.learn-card-status{
+  position:absolute; top:14px; right:14px; font-family:var(--font-data); font-weight:700; font-size:9.5px;
+  background:rgba(124,58,237,.08); color:var(--violet); padding:4px 10px; border-radius:999px;
+}
+[data-theme="dark"] .learn-card-status{ background:rgba(201,182,255,.12); color:#C9B6FF; }
+
+.learn-card-icon{
+  width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+  font-size:24px; margin-bottom:14px;
+}
+.learn-card h3{ font-size:17px; margin-bottom:8px; color:var(--text); }
+.learn-card-desc{ font-size:13px; line-height:1.55; margin-bottom:14px; min-height:58px; }
+
+.learn-meta-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.learn-meta-pill{
+  font-family:var(--font-data); font-weight:700; font-size:10.5px; padding:4px 9px; border-radius:999px;
+  background:var(--cream-2); color:var(--text-muted);
+}
+
+.learn-card-footer{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+.learn-skill-badge{
+  font-family:var(--font-data); font-weight:700; font-size:10.5px; padding:4px 10px; border-radius:999px;
+  background:var(--tilt-accent,var(--violet)); color:#fff;
+}
+.learn-mascot-tag{ font-size:12px; color:var(--text-muted); font-weight:600; }
+
+.learn-objective{ font-size:11.5px; color:var(--text-muted); margin-top:auto; padding-top:10px; border-top:1px dashed rgba(30,27,46,.08); }
+[data-theme="dark"] .learn-objective{ border-top-color:rgba(255,255,255,.08); }
+.learn-objective strong{ color:var(--text); }
