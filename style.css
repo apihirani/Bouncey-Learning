@@ -1245,3 +1245,81 @@ a:focus-visible, button:focus-visible, input:focus-visible{
 .learn-objective{ font-size:11.5px; color:var(--text-muted); margin-top:auto; padding-top:10px; border-top:1px dashed rgba(30,27,46,.08); }
 [data-theme="dark"] .learn-objective{ border-top-color:rgba(255,255,255,.08); }
 .learn-objective strong{ color:var(--text); }
+
+/* ---------- Learning Center: "Available Now" card + link (additive to existing .learn-card) ---------- */
+.learn-card--available{ border-top-color:#7C3AED; }
+.learn-card-status--live{ background:rgba(16,185,129,.12); color:var(--green); }
+[data-theme="dark"] .learn-card-status--live{ background:rgba(16,185,129,.18); }
+.learn-card-cta{
+  display:inline-block; margin-top:12px; font-family:var(--font-data); font-weight:700; font-size:12.5px; color:var(--violet);
+}
+[data-theme="dark"] .learn-card-cta{ color:#C9B6FF; }
+
+/* =========================================================
+   Multiplication Tables module — reuses .learn-card shadow/
+   radius/hover-lift, .learn-meta-pill badges, and existing
+   color tokens. Only the <details>/<summary> interaction and
+   the table-row list are genuinely new rules.
+   ========================================================= */
+
+.mult-tables-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+@media (max-width:1100px){ .mult-tables-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:640px){ .mult-tables-grid{ grid-template-columns:1fr; } }
+
+.mult-table-card{
+  background:var(--surface); border:1px solid rgba(30,27,46,.06); border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card); transition:box-shadow .3s ease; overflow:hidden;
+}
+.mult-table-card[open]{ box-shadow:0 26px 50px -18px rgba(30,27,46,.25); }
+
+.mult-table-summary{
+  list-style:none; cursor:pointer; padding:20px 22px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.mult-table-summary::-webkit-details-marker{ display:none; }
+.mult-table-number{
+  font-family:var(--font-display); font-weight:800; font-size:22px; color:var(--violet); flex-shrink:0;
+}
+[data-theme="dark"] .mult-table-number{ color:#C9B6FF; }
+.mult-table-title{ font-weight:700; font-size:14.5px; color:var(--text); margin-right:auto; }
+.mult-meta-row{ display:flex; flex-wrap:wrap; gap:6px; }
+.mult-mascot{ font-size:20px; flex-shrink:0; }
+
+.mult-table-body{ padding:0 22px 24px; border-top:1px dashed rgba(30,27,46,.08); }
+[data-theme="dark"] .mult-table-body{ border-top-color:rgba(255,255,255,.08); }
+
+.mult-gamify-row{ display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 14px; }
+.mult-gamify-chip{
+  font-family:var(--font-data); font-weight:700; font-size:11px; padding:6px 10px; border-radius:999px;
+  background:var(--cream-2); color:var(--text-muted); display:inline-flex; align-items:center; gap:4px;
+}
+.mult-gamify-chip small{ font-weight:600; opacity:.75; }
+
+.mult-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+.mult-action-btn{
+  font-family:var(--font-data); font-weight:700; font-size:12px; padding:9px 14px; border-radius:999px;
+  background:rgba(124,58,237,.06); color:var(--text-muted); opacity:.65; cursor:not-allowed; display:inline-flex; align-items:center; gap:6px;
+}
+.mult-action-btn em{ font-style:normal; font-size:9.5px; background:rgba(124,58,237,.1); padding:2px 6px; border-radius:999px; }
+
+.mult-table-body h4{ font-family:var(--font-display); font-size:14px; color:var(--text); margin-bottom:10px; }
+.mult-full-table{
+  list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:6px 16px; padding:0; margin:0 0 20px;
+  font-family:var(--font-data); font-size:13px; color:var(--text);
+}
+
+.mult-info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+@media (max-width:480px){ .mult-info-grid{ grid-template-columns:1fr; } }
+.mult-info-grid h5{ font-size:11.5px; color:var(--violet); margin-bottom:4px; }
+[data-theme="dark"] .mult-info-grid h5{ color:#C9B6FF; }
+.mult-info-grid p{ font-size:12.5px; line-height:1.5; margin:0; }
+
+.mult-table-summary::after{ content:'▾'; margin-left:8px; color:var(--text-muted); transition:transform .25s ease; flex-shrink:0; }
+.mult-table-card[open] .mult-table-summary::after{ transform:rotate(180deg); }
+@media (prefers-reduced-motion: reduce){
+  .mult-table-summary::after{ transition:none; }
+}
+
+.mult-fact{ font-size:12.5px; background:var(--cream-2); padding:12px 14px; border-radius:12px; margin-bottom:10px; }
+.mult-fact strong{ color:var(--text); }
+.mult-objective{ font-size:12.5px; color:var(--text-muted); }
+.mult-objective strong{ color:var(--text); }
